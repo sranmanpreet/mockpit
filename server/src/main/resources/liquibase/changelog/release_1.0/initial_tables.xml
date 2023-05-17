@@ -1,0 +1,128 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="create_mock_table" author="sranmanpreet">
+        <createTable tableName="mock">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(1000)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_route_table" author="sranmanpreet">
+        <createTable tableName="route">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="path" type="varchar(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="method" type="varchar(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mock_id" type="bigint">
+            </column>
+            <column name="created_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="route" baseColumnNames="mock_id"
+                                 referencedTableName="mock" referencedColumnNames="id"
+                                 constraintName="fk_route_mock"/>
+    </changeSet>
+
+    <changeSet author="sranmanpreet" id="create_response_body_table">
+        <createTable tableName="response_body">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="type" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="content" type="text">
+                <constraints nullable="true"/>
+            </column>
+            <column name="mock_id" type="bigint">
+            </column>
+            <column name="created_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="response_body" baseColumnNames="mock_id"
+                                 constraintName="fk_response_body_mock"
+                                 referencedTableName="mock" referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet author="sranmanpreet" id="create_response_header_table">
+        <createTable tableName="response_header">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mock_id" type="bigint">
+            </column>
+            <column name="created_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="response_header" baseColumnNames="mock_id"
+                                 constraintName="fk_response_header_mock"
+                                 referencedTableName="mock" referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet author="sranmanpreet" id="create_response_status_table">
+        <createTable tableName="response_status">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mock_id" type="bigint">
+
+            </column>
+            <column name="created_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="response_status" baseColumnNames="mock_id"
+                                 constraintName="fk_response_status_mock"
+                                 referencedTableName="mock" referencedColumnNames="id"/>
+    </changeSet>
+
+
+
+    <!-- additional change sets for other entities go here -->
+
+</databaseChangeLog>

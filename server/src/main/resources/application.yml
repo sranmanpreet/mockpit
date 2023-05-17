@@ -1,0 +1,33 @@
+spring:
+   liquibase:
+      change-log: classpath:liquibase/master.xml
+      enabled: true
+   datasource:
+      url: jdbc:postgresql://localhost:5432/mockbuddy
+      username: postgres
+      password: postgres
+      driver-class-name: org.postgresql.Driver
+   jpa:
+      hibernate:
+         ddl-auto: none
+      properties:
+         hibernate:
+            dialect: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+   port: 8080
+
+logging:
+   level:
+      root: info
+
+springdoc:
+   swagger-ui:
+      path: /swagger-ui.html
+      enabled: true
+
+   api-docs:
+      path: /v3/api-docs
+      enabled: true
+      title: Mock Buddy API
+      description: A REST Mock Server
