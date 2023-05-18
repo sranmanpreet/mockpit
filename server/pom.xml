@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ms.utils</groupId>
-	<artifactId>mock-buddy</artifactId>
+	<artifactId>moock</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>mock-buddy</name>
+	<name>moock-service</name>
 	<description>A REST mock server </description>
 	<properties>
 		<java.version>11</java.version>

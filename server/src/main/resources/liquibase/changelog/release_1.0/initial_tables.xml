@@ -34,7 +34,7 @@
             <column name="method" type="varchar(10)">
                 <constraints nullable="false"/>
             </column>
-            <column name="mock_id" type="bigint">
+            <column name="mock" type="bigint">
             </column>
             <column name="created_date" type="timestamp">
                 <constraints nullable="false"/>
@@ -43,7 +43,7 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseTableName="route" baseColumnNames="mock_id"
+        <addForeignKeyConstraint baseTableName="route" baseColumnNames="mock"
                                  referencedTableName="mock" referencedColumnNames="id"
                                  constraintName="fk_route_mock"/>
     </changeSet>
@@ -59,7 +59,7 @@
             <column name="content" type="text">
                 <constraints nullable="true"/>
             </column>
-            <column name="mock_id" type="bigint">
+            <column name="mock" type="bigint">
             </column>
             <column name="created_date" type="timestamp">
                 <constraints nullable="false"/>
@@ -68,7 +68,7 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseTableName="response_body" baseColumnNames="mock_id"
+        <addForeignKeyConstraint baseTableName="response_body" baseColumnNames="mock"
                                  constraintName="fk_response_body_mock"
                                  referencedTableName="mock" referencedColumnNames="id"/>
     </changeSet>
@@ -84,7 +84,7 @@
             <column name="value" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="mock_id" type="bigint">
+            <column name="mock" type="bigint">
             </column>
             <column name="created_date" type="timestamp">
                 <constraints nullable="false"/>
@@ -93,7 +93,7 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseTableName="response_header" baseColumnNames="mock_id"
+        <addForeignKeyConstraint baseTableName="response_header" baseColumnNames="mock"
                                  constraintName="fk_response_header_mock"
                                  referencedTableName="mock" referencedColumnNames="id"/>
     </changeSet>
@@ -106,7 +106,7 @@
             <column name="code" type="integer">
                 <constraints nullable="false"/>
             </column>
-            <column name="mock_id" type="bigint">
+            <column name="mock" type="bigint">
 
             </column>
             <column name="created_date" type="timestamp">
@@ -116,7 +116,7 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseTableName="response_status" baseColumnNames="mock_id"
+        <addForeignKeyConstraint baseTableName="response_status" baseColumnNames="mock"
                                  constraintName="fk_response_status_mock"
                                  referencedTableName="mock" referencedColumnNames="id"/>
     </changeSet>

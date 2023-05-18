@@ -1,0 +1,112 @@
+package com.ms.utils.moock.service;
+
+import com.ms.utils.moock.domain.*;
+import com.ms.utils.moock.dto.MockDTO;
+import com.ms.utils.moock.dto.ResponseHeaderDTO;
+import com.ms.utils.moock.mapper.*;
+import com.ms.utils.moock.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+@Service
+public class MockService {
+
+    @Autowired
+    private MockRepository mockRepository;
+
+    @Autowired
+    private RouteRepository routeRepository;
+
+    @Autowired
+    private ResponseHeaderRepository responseHeaderRepository;
+
+    @Autowired
+    private ResponseBodyRepository responseBodyRepository;
+
+    @Autowired
+    private ResponseStatusRepository responseStatusRepository;
+
+    @Autowired
+    private MockMapper mockMapper;
+
+    @Autowired
+    private RouteMapper routeMapper;
+
+    @Autowired
+    private ResponseHeaderMapper responseHeaderMapper;
+
+    @Autowired
+    private ResponseBodyMapper responseBodyMapper;
+
+    @Autowired
+    private ResponseStatusMapper responseStatusMapper;
+
+    public List<MockDTO> getAllMocks() {
+        List<Mock> mocks = mockRepository.findAll();
+        return mockMapper.toDTOList(mocks);
+    }
+    @Transactional
+    public MockDTO createMock(MockDTO mockDTO) {
+        Mock mock = new Mock(mockDTO.getName(), mockDTO.getDescription());
+        mock = mockRepository.save(mock);
+        createAssociates(mock, mockDTO);
+        return mockMapper.toDto(mock);
+    }
+
+    private void createAssociates(Mock mock, MockDTO mockDTO) {
+        createResponseBody(mock, mockDTO);
+        createResponseHeaders(mock, mockDTO);
+        createRoute(mock, mockDTO);
+        createResponseStatus(mock, mockDTO);
+    }
+
+    private void createResponseStatus(Mock mock, MockDTO mockDTO) {
+        ResponseStatus rs = responseStatusMapper.toEntity(mockDTO.getResponseStatus());
+        rs.setMock(mock);
+        responseStatusRepository.save(rs);
+    }
+
+    private void createResponseBody(Mock mock, MockDTO mockDTO) {
+        ResponseBody rb = responseBodyMapper.toEntity(mockDTO.getResponseBody());
+        rb.setMock(mock);
+        responseBodyRepository.save(rb);
+    }
+
+    private void createResponseHeaders(Mock mock, MockDTO mockDTO) {
+        Set<ResponseHeader> responseHeaders = responseHeaderMapper.toEntityList(mockDTO.getResponseHeaders());
+        for (ResponseHeader responseHeader : responseHeaders) {
+            responseHeader.setMock(mock);
+        }
+        responseHeaderRepository.saveAll(responseHeaders);
+    }
+
+    private void createRoute(Mock mock, MockDTO mockDTO) {
+        Route route = routeMapper.toEntity(mockDTO.getRoute());
+        route.setMock(mock);
+        routeRepository.save(route);
+    }
+
+    public MockDTO getMockById(Long id) {
+        Optional<Mock> mock = mockRepository.findById(id);
+        if(mock.isPresent()){
+            return mockMapper.toDto(mock.get());
+        }
+        return null;
+    }
+
+    public MockDTO updateMock(Long id, MockDTO mockDTO) {
+        Mock existingMock = mockRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Mock not found with id: " + id));
+        return mockMapper.toDto(existingMock);
+    }
+
+    public void deleteMockById(Long id) {
+        mockRepository.deleteById(id);
+    }
+}
