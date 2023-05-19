@@ -7,12 +7,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/mocks")
+@RequestMapping("/native/api/mocks")
 public class MockResource {
 
     @Autowired
     private MockService mockService;
+
+    @GetMapping
+    public ResponseEntity<List<MockDTO>> getAllMock() {
+        List<MockDTO> mocks = mockService.getAllMocks();
+        return new ResponseEntity<List<MockDTO>>(mocks, HttpStatus.OK);
+    }
 
     @PostMapping
     public ResponseEntity<MockDTO> createMock(@RequestBody MockDTO mock) {

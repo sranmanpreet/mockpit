@@ -6,6 +6,7 @@ import com.ms.utils.moock.dto.ResponseHeaderDTO;
 import com.ms.utils.moock.mapper.*;
 import com.ms.utils.moock.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -98,6 +99,14 @@ public class MockService {
             return mockMapper.toDto(mock.get());
         }
         return null;
+    }
+
+    public MockDTO getMockByRouteAndMethod(String route, String method) {
+        List<Mock> mocks = mockRepository.findByRouteAndMethod(route, method);
+        if(mocks.isEmpty()){
+            return null;
+        }
+        return mockMapper.toDto(mocks.get(0));
     }
 
     public MockDTO updateMock(Long id, MockDTO mockDTO) {
