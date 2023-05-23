@@ -3,24 +3,34 @@ package com.ms.utils.moock.dto;
 import java.util.List;
 
 public class LiveResponseDTO {
-    ResponseBodyDTO body;
+    String body;
     List<ResponseHeaderDTO> headers;
+    int statusCode;
 
     public LiveResponseDTO(){
 
     }
 
-    public LiveResponseDTO(ResponseBodyDTO body, List<ResponseHeaderDTO> headers) {
+    public LiveResponseDTO(String body, int statusCode, List<ResponseHeaderDTO> headers) {
         this.body = body;
+        this.statusCode = statusCode;
         this.headers = headers;
     }
 
-    public ResponseBodyDTO getBody() {
+    public String getBody() {
         return body;
     }
 
-    public void setBody(ResponseBodyDTO body) {
+    public void setBody(String body) {
         this.body = body;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
     }
 
     public List<ResponseHeaderDTO> getHeaders() {

@@ -59,6 +59,9 @@
             <column name="content" type="text">
                 <constraints nullable="true"/>
             </column>
+            <column name="content_type" type="text">
+                <constraints nullable="true"/>
+            </column>
             <column name="mock" type="bigint">
             </column>
             <column name="created_date" type="timestamp">

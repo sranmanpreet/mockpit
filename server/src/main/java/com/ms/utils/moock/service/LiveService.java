@@ -4,7 +4,6 @@ import com.ms.utils.moock.dto.LiveResponseDTO;
 import com.ms.utils.moock.dto.MockDTO;
 import com.ms.utils.moock.mapper.MockDTOLiveResponseDTOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
 @Service

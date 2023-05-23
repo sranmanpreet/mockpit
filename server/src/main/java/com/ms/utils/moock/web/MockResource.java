@@ -42,8 +42,14 @@ public class MockResource {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMock(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteMock(@PathVariable Long id) {
         mockService.deleteMockById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Mock with ID : ${id} deleted");
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Object> deleteMock() {
+        mockService.deleteAllMocks();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("All mocks deleted");
     }
 }

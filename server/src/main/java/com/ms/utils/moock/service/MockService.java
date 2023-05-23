@@ -106,7 +106,7 @@ public class MockService {
         if(mocks.isEmpty()){
             return null;
         }
-        return mockMapper.toDto(mocks.get(0));
+        return mockMapper.toDto(mocks.get(mocks.size()-1));
     }
 
     public MockDTO updateMock(Long id, MockDTO mockDTO) {
@@ -118,4 +118,6 @@ public class MockService {
     public void deleteMockById(Long id) {
         mockRepository.deleteById(id);
     }
+
+    public void deleteAllMocks() { mockRepository.deleteAll(); }
 }

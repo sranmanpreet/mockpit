@@ -3,7 +3,7 @@ spring:
       change-log: classpath:liquibase/master.xml
       enabled: true
    datasource:
-      url: jdbc:postgresql://localhost:5432/mockbuddy
+      url: jdbc:postgresql://localhost:5432/moock
       username: postgres
       password: postgres
       driver-class-name: org.postgresql.Driver
@@ -19,7 +19,22 @@ server:
 
 logging:
    level:
-      root: info
+      root: INFO
+      com.example.package: DEBUG
+   file: /server/log/moock.log
+   configuration:
+      status: warn
+      appenders:
+         - name: ConsoleAppender
+           type: Console
+           target: SYSTEM_OUT
+           PatternLayout:
+              pattern: "%d [%t] %-5level %logger{36} - %msg%n"
+      loggers:
+         - name: com.example.package
+           level: DEBUG
+           AppenderRef:
+              - ref: ConsoleAppender
 
 springdoc:
    swagger-ui:
