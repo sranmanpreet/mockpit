@@ -6,8 +6,7 @@ public class ResponseBodyDTO {
 
     private String type;
     private String content;
-
-    private MediaType contentType;
+    private String contentType;
 
     public String getType() {
         return type;
@@ -25,11 +24,11 @@ public class ResponseBodyDTO {
         this.content = content;
     }
 
-    public MediaType getContentType() {
+    public String getContentType() {
         return contentType;
     }
 
-    public void setContentType(MediaType contentType) {
+    public void setContentType(String contentType) {
         this.contentType = contentType;
     }
 }

@@ -1,10 +1,13 @@
 package com.ms.utils.moock.dto;
 
+import org.springframework.http.MediaType;
+
 import java.util.List;
 
 public class LiveResponseDTO {
     String body;
     List<ResponseHeaderDTO> headers;
+    String contentType;
     int statusCode;
 
     public LiveResponseDTO(){
@@ -23,6 +26,14 @@ public class LiveResponseDTO {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 
     public int getStatusCode() {

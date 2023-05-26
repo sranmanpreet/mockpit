@@ -12,6 +12,7 @@ public interface MockDTOLiveResponseDTOMapper {
 
     @Mappings({
             @Mapping(source = "responseBody.content", target = "body"),
+            @Mapping(source = "responseBody.contentType", target = "contentType"),
             @Mapping(source = "responseStatus.code", target = "statusCode"),
             @Mapping(source = "responseHeaders", target = "headers")
     })

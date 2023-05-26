@@ -1,6 +1,7 @@
 package com.ms.utils.moock.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.http.MediaType;
 
 import javax.persistence.*;
 
@@ -17,6 +18,9 @@ public class ResponseBody extends AbstractEntity{
 
     @Column(name = "content", nullable = false)
     private String content;
+
+    @Column(name = "content_type", nullable = false)
+    private String contentType;
 
     @OneToOne(targetEntity = Mock.class)
     @JoinColumn(name = "mock")
@@ -44,6 +48,14 @@ public class ResponseBody extends AbstractEntity{
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 
     public Mock getMock() {

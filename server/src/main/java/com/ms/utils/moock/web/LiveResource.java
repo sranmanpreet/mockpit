@@ -37,6 +37,7 @@ public class LiveResource {
         }
         liveResponse.getHeaders().forEach(header -> response.addHeader(header.getName(), header.getValue()));
 
-        return ResponseEntity.status(liveResponse.getStatusCode()).contentType(MediaType.parseMediaType("application/abc")).body(liveResponse);
+        return ResponseEntity.status(liveResponse.getStatusCode())
+                .contentType(MediaType.parseMediaType(liveResponse.getContentType())).body(liveResponse.getBody());
     }
 }
