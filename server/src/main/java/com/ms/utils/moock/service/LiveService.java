@@ -1,5 +1,6 @@
 package com.ms.utils.moock.service;
 
+import com.ms.utils.moock.aop.exception.MockNotFoundException;
 import com.ms.utils.moock.dto.LiveResponseDTO;
 import com.ms.utils.moock.dto.MockDTO;
 import com.ms.utils.moock.mapper.MockDTOLiveResponseDTOMapper;
@@ -15,7 +16,7 @@ public class LiveService {
     @Autowired
     private MockDTOLiveResponseDTOMapper mockDtoToLiveResponseMapper;
 
-    public LiveResponseDTO getLiveResponse(String route, String method){
+    public LiveResponseDTO getLiveResponse(String route, String method) throws MockNotFoundException {
         MockDTO mockDto = mockService.getMockByRouteAndMethod(route, method);
         return mockDtoToLiveResponseMapper.toLiveResponseDTO(mockDto);
     }

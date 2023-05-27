@@ -1,5 +1,7 @@
 package com.ms.utils.moock.web;
 
+import com.ms.utils.moock.aop.exception.MockNotFoundException;
+import com.ms.utils.moock.aop.exception.MoockApplicationException;
 import com.ms.utils.moock.dto.MockDTO;
 import com.ms.utils.moock.service.MockService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +19,13 @@ public class MockResource {
     private MockService mockService;
 
     @GetMapping
-    public ResponseEntity<List<MockDTO>> getAllMock() {
+    public ResponseEntity<List<MockDTO>> getAllMock() throws MoockApplicationException {
         List<MockDTO> mocks = mockService.getAllMocks();
         return new ResponseEntity<List<MockDTO>>(mocks, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<MockDTO> createMock(@RequestBody MockDTO mock) {
+    public ResponseEntity<MockDTO> createMock(@RequestBody MockDTO mock) throws MoockApplicationException {
         MockDTO savedMock = mockService.createMock(mock);
         return new ResponseEntity<>(savedMock, HttpStatus.CREATED);
     }
@@ -35,14 +37,14 @@ public class MockResource {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MockDTO> updateMock(@PathVariable Long id, @RequestBody MockDTO mock) {
+    public ResponseEntity<MockDTO> updateMock(@PathVariable Long id, @RequestBody MockDTO mock) throws MockNotFoundException {
         mock.setId(id);
         MockDTO updatedMock = mockService.updateMock(id, mock);
         return new ResponseEntity<>(updatedMock, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteMock(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteMock(@PathVariable Long id) throws MockNotFoundException {
         mockService.deleteMockById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Mock with ID : ${id} deleted");
     }

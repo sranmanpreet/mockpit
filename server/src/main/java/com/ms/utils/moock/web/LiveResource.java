@@ -1,5 +1,6 @@
 package com.ms.utils.moock.web;
 
+import com.ms.utils.moock.aop.exception.MockNotFoundException;
 import com.ms.utils.moock.dto.LiveResponseDTO;
 import com.ms.utils.moock.service.LiveService;
 import org.slf4j.Logger;
@@ -28,7 +29,7 @@ public class LiveResource {
     private final Logger LOGGER = LoggerFactory.getLogger(LiveResource.class);
 
     @RequestMapping
-    public ResponseEntity<Object> handleLiveRequests(HttpServletRequest request, HttpServletResponse response){
+    public ResponseEntity<Object> handleLiveRequests(HttpServletRequest request, HttpServletResponse response) throws MockNotFoundException {
         LOGGER.info("Handle Get Requests called");
         LOGGER.info(request.getRequestURI() + " " + request.getMethod());
         LiveResponseDTO liveResponse = liveResponseService.getLiveResponse(request.getRequestURI(), request.getMethod());
