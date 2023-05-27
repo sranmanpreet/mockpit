@@ -1,11 +1,9 @@
 package com.ms.utils.moock.dto;
 
-import org.springframework.http.MediaType;
-
 import java.util.List;
 
 public class LiveResponseDTO {
-    String body;
+    Object body;
     List<ResponseHeaderDTO> headers;
     String contentType;
     int statusCode;
@@ -14,17 +12,17 @@ public class LiveResponseDTO {
 
     }
 
-    public LiveResponseDTO(String body, int statusCode, List<ResponseHeaderDTO> headers) {
+    public LiveResponseDTO(Object body, int statusCode, List<ResponseHeaderDTO> headers) {
         this.body = body;
         this.statusCode = statusCode;
         this.headers = headers;
     }
 
-    public String getBody() {
+    public Object getBody() {
         return body;
     }
 
-    public void setBody(String body) {
+    public void setBody(Object body) {
         this.body = body;
     }
 

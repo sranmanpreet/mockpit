@@ -70,13 +70,15 @@ public class MockService {
     private void createResponseStatus(Mock mock, MockDTO mockDTO) {
         ResponseStatus rs = responseStatusMapper.toEntity(mockDTO.getResponseStatus());
         rs.setMock(mock);
-        responseStatusRepository.save(rs);
+        rs = responseStatusRepository.save(rs);
+        mock.setResponseStatus(rs);
     }
 
     private void createResponseBody(Mock mock, MockDTO mockDTO) {
         ResponseBody rb = responseBodyMapper.toEntity(mockDTO.getResponseBody());
         rb.setMock(mock);
-        responseBodyRepository.save(rb);
+        rb = responseBodyRepository.save(rb);
+        mock.setResponseBody(rb);
     }
 
     private void createResponseHeaders(Mock mock, MockDTO mockDTO) {
@@ -84,13 +86,15 @@ public class MockService {
         for (ResponseHeader responseHeader : responseHeaders) {
             responseHeader.setMock(mock);
         }
-        responseHeaderRepository.saveAll(responseHeaders);
+        List<ResponseHeader> headers = responseHeaderRepository.saveAll(responseHeaders);
+        mock.setResponseHeaders(headers);
     }
 
     private void createRoute(Mock mock, MockDTO mockDTO) {
         Route route = routeMapper.toEntity(mockDTO.getRoute());
         route.setMock(mock);
-        routeRepository.save(route);
+        route = routeRepository.save(route);
+        mock.setRoute(route);
     }
 
     public MockDTO getMockById(Long id) {

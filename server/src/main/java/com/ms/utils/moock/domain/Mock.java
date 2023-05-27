@@ -3,7 +3,9 @@ package com.ms.utils.moock.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -24,7 +26,7 @@ public class Mock extends AbstractEntity {
 
     @OneToMany(mappedBy = "mock", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private Set<ResponseHeader> responseHeaders = new HashSet<>();
+    private List<ResponseHeader> responseHeaders = new ArrayList<>();
 
     @OneToOne(mappedBy = "mock", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
@@ -73,11 +75,11 @@ public class Mock extends AbstractEntity {
         this.route = route;
     }
 
-    public Set<ResponseHeader> getResponseHeaders() {
+    public List<ResponseHeader> getResponseHeaders() {
         return responseHeaders;
     }
 
-    public void setResponseHeaders(Set<ResponseHeader> responseHeaders) {
+    public void setResponseHeaders(List<ResponseHeader> responseHeaders) {
         this.responseHeaders = responseHeaders;
     }
 

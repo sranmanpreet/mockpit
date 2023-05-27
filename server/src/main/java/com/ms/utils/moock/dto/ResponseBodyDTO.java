@@ -5,7 +5,7 @@ import org.springframework.http.MediaType;
 public class ResponseBodyDTO {
 
     private String type;
-    private String content;
+    private Object content;
     private String contentType;
 
     public String getType() {
@@ -16,11 +16,11 @@ public class ResponseBodyDTO {
         this.type = type;
     }
 
-    public String getContent() {
+    public Object getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(Object content) {
         this.content = content;
     }
 
