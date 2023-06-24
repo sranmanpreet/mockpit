@@ -1,7 +1,6 @@
 package com.ms.utils.moock.aop.exception;
 
-
-public class MoockApplicationException extends RuntimeException{
+public class MoockApplicationException extends Exception {
     String message;
 
     public MoockApplicationException() {

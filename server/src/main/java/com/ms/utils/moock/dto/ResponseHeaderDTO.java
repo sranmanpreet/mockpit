@@ -1,9 +1,5 @@
 package com.ms.utils.moock.dto;
 
-import com.ms.utils.moock.domain.Mock;
-
-import java.time.LocalDateTime;
-
 public class ResponseHeaderDTO {
     private String name;
     private String value;

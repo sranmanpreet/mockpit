@@ -6,6 +6,7 @@ import com.ms.utils.moock.domain.*;
 import com.ms.utils.moock.dto.MockDTO;
 import com.ms.utils.moock.mapper.*;
 import com.ms.utils.moock.repository.*;
+import com.ms.utils.moock.validator.MockValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -49,24 +51,22 @@ public class MockService {
     @Autowired
     private ResponseStatusMapper responseStatusMapper;
 
-    public List<MockDTO> getAllMocks() throws MoockApplicationException {
-        try{
-            List<Mock> mocks = mockRepository.findAll();
-            return mockMapper.toDTOList(mocks);
-        } catch (Exception e){
-            throw new MoockApplicationException();
-        }
+    @Autowired
+    private MockValidator mockValidator;
+
+    public List<MockDTO> getAllMocks() {
+        List<Mock> mocks = mockRepository.findAll();
+        return mockMapper.toDTOList(mocks);
     }
-    @Transactional
+
     public MockDTO createMock(MockDTO mockDTO) throws MoockApplicationException {
-        try{
+        if(mockValidator.isMockValid(mockDTO)){
             Mock mock = new Mock(mockDTO.getName(), mockDTO.getDescription());
             mock = mockRepository.save(mock);
             createAssociates(mock, mockDTO);
             return mockMapper.toDto(mock);
-        } catch (Exception e){
-            throw new MoockApplicationException("Invalid mock.");
         }
+        return null;
     }
 
     private void createAssociates(Mock mock, MockDTO mockDTO) {
@@ -91,6 +91,9 @@ public class MockService {
     }
 
     private void createResponseHeaders(Mock mock, MockDTO mockDTO) {
+        if(Objects.isNull(mockDTO.getResponseHeaders())){
+            return;
+        }
         Set<ResponseHeader> responseHeaders = responseHeaderMapper.toEntityList(mockDTO.getResponseHeaders());
         for (ResponseHeader responseHeader : responseHeaders) {
             responseHeader.setMock(mock);
@@ -106,34 +109,40 @@ public class MockService {
         mock.setRoute(route);
     }
 
-    public MockDTO getMockById(Long id) {
+    public MockDTO getMockById(Long id) throws MockNotFoundException {
         Optional<Mock> mock = mockRepository.findById(id);
-        if(mock.isPresent()){
-            return mockMapper.toDto(mock.get());
+        if(!mock.isPresent()){
+            throw new MockNotFoundException("No Mock found with id "+id);
         }
-        return null;
+        return mockMapper.toDto(mock.get());
     }
 
-    public MockDTO getMockByRouteAndMethod(String route, String method) throws MockNotFoundException {
+    public MockDTO getMockByRouteAndMethod(String route, String method) {
         List<Mock> mocks = mockRepository.findByRouteAndMethod(route, method);
-        if(mocks.isEmpty()){
-            throw new MockNotFoundException("Resource not found.");
+        if(Objects.isNull(mocks) || mocks.isEmpty()){
+            return null;
         }
         return mockMapper.toDto(mocks.get(mocks.size()-1));
     }
 
-    public MockDTO updateMock(Long id, MockDTO mockDTO) throws MockNotFoundException {
-        Mock existingMock = mockRepository.findById(id)
-                .orElseThrow(() -> new MockNotFoundException("Mock not found."));
-        return mockMapper.toDto(existingMock);
+    public MockDTO updateMock(MockDTO mockDTO) throws MockNotFoundException, MoockApplicationException {
+        Optional<Mock> existingMock = mockRepository.findById(mockDTO.getId());
+        if(!existingMock.isPresent()){
+            throw new MockNotFoundException("No Mock found with id "+mockDTO.getId());
+        }
+        Mock updatedMock = null;
+        if(mockValidator.isMockValid(mockDTO)){
+            updatedMock =  mockRepository.save(mockMapper.toEntity(mockDTO));
+        }
+        return mockMapper.toDto(updatedMock);
     }
 
     public void deleteMockById(Long id) throws MockNotFoundException {
-        try{
-            mockRepository.deleteById(id);
-        } catch (EmptyResultDataAccessException e){
-            throw new MockNotFoundException("Mock not found.");
+        Optional<Mock> existingMock = mockRepository.findById(id);
+        if(!existingMock.isPresent()){
+            throw new MockNotFoundException("No Mock found with id "+ id);
         }
+        mockRepository.deleteById(id);
     }
 
     public void deleteAllMocks() { mockRepository.deleteAll(); }

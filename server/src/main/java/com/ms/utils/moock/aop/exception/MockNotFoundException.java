@@ -1,6 +1,7 @@
 package com.ms.utils.moock.aop.exception;
 
-public class MockNotFoundException extends RuntimeException {
+
+public class MockNotFoundException extends Exception {
 
     String message;
 

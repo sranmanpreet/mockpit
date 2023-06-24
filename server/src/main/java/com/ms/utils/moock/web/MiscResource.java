@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Order(1000)
 public class MiscResource {
 
     @RequestMapping(value = "/native/**")
