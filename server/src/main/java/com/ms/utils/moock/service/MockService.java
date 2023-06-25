@@ -146,4 +146,9 @@ public class MockService {
     }
 
     public void deleteAllMocks() { mockRepository.deleteAll(); }
+
+    public List<MockDTO> performSearch(String query) {
+        List<Mock> mocks = mockRepository.searchMocks(query);
+        return mockMapper.toDTOList(mocks);
+    }
 }

@@ -21,5 +21,12 @@ public interface MockRepository extends JpaRepository<Mock, Long> {
 
     @Query("SELECT m FROM Mock m JOIN m.route r WHERE r.path = :route AND r.method = :method")
     List<Mock> findByRouteAndMethod(@Param("route") String route, @Param("method") String method);
+
+    @Query("SELECT m FROM Mock m " +
+            "LEFT JOIN FETCH m.route r " +
+            "LEFT JOIN FETCH m.responseBody rb " +
+            "WHERE m.name LIKE %:query% OR m.description LIKE %:query% " +
+            "OR r.path LIKE %:query% OR rb.content LIKE %:query%")
+    List<Mock> searchMocks(@Param("query") String query);
 }
 

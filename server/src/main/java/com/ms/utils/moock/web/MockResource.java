@@ -68,6 +68,11 @@ public class MockResource {
         return new ResponseEntity<>(createResponse("All mocks deleted", null), HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<MockResponse> search(@RequestParam String query) {
+        return new ResponseEntity<>(createResponse("Search results for '"+ query + "'", mockService.performSearch(query)), HttpStatus.OK);
+    }
+
     private MockResponse createResponse(String message, Object data){
         return new MockResponse(message, data);
     }
