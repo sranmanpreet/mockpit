@@ -3,6 +3,7 @@ package com.ms.utils.moock.service;
 import com.ms.utils.moock.aop.exception.MockNotFoundException;
 import com.ms.utils.moock.aop.exception.MoockApplicationException;
 import com.ms.utils.moock.domain.*;
+import com.ms.utils.moock.dto.ExportMockDTO;
 import com.ms.utils.moock.dto.MockDTO;
 import com.ms.utils.moock.mapper.*;
 import com.ms.utils.moock.repository.*;
@@ -59,6 +60,7 @@ public class MockService {
         return mockMapper.toDTOList(mocks);
     }
 
+    @Transactional
     public MockDTO createMock(MockDTO mockDTO) throws MoockApplicationException {
         if(mockValidator.isMockValid(mockDTO)){
             Mock mock = new Mock(mockDTO.getName(), mockDTO.getDescription());

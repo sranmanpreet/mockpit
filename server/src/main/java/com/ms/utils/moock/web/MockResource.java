@@ -2,6 +2,7 @@ package com.ms.utils.moock.web;
 
 import com.ms.utils.moock.aop.exception.MockNotFoundException;
 import com.ms.utils.moock.aop.exception.MoockApplicationException;
+import com.ms.utils.moock.aop.interceptor.LogExecutionTime;
 import com.ms.utils.moock.domain.Mock;
 import com.ms.utils.moock.dto.MockDTO;
 import com.ms.utils.moock.dto.MockResponse;
@@ -26,10 +27,11 @@ public class MockResource {
     @Autowired
     private MockService mockService;
 
+    @LogExecutionTime
     @GetMapping
     public ResponseEntity<MockResponse> getAllMock() {
         List<MockDTO> mocks = mockService.getAllMocks();
-        return new ResponseEntity<MockResponse>(createResponse(mocks), HttpStatus.OK);
+        return new ResponseEntity<MockResponse>(createResponse(mocks.size() + " Mocks found.",mocks), HttpStatus.OK);
     }
 
     @PostMapping
@@ -68,6 +70,7 @@ public class MockResource {
         return new ResponseEntity<>(createResponse("All mocks deleted", null), HttpStatus.OK);
     }
 
+    @LogExecutionTime
     @GetMapping("/search")
     public ResponseEntity<MockResponse> search(@RequestParam String query) {
         return new ResponseEntity<>(createResponse("Search results for '"+ query + "'", mockService.performSearch(query)), HttpStatus.OK);
