@@ -4,6 +4,9 @@ import com.ms.utils.moock.aop.exception.MockNotFoundException;
 import com.ms.utils.moock.dto.LiveResponseDTO;
 import com.ms.utils.moock.dto.MockDTO;
 import com.ms.utils.moock.mapper.MockDTOLiveResponseDTOMapper;
+import com.ms.utils.moock.web.LiveResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +14,8 @@ import java.util.Objects;
 
 @Service
 public class LiveService {
+
+    private final Logger LOGGER = LoggerFactory.getLogger(LiveService.class);
 
     @Autowired
     private MockService mockService;

@@ -41,6 +41,7 @@ public class MockResource {
         return new ResponseEntity<MockResponse>(createResponse(mocks.size() + " Mocks found.",mocks), HttpStatus.OK);
     }
 
+    @LogExecutionTime
     @PostMapping
     @Transactional
     public ResponseEntity<MockResponse> createMock(@RequestBody MockDTO mock) throws MoockApplicationException {
@@ -48,6 +49,7 @@ public class MockResource {
         return new ResponseEntity<>(createResponse(savedMock), HttpStatus.CREATED);
     }
 
+    @LogExecutionTime
     @GetMapping("/{id}")
     public ResponseEntity<MockResponse> getMockById(@PathVariable Long id) throws MockNotFoundException {
         LOGGER.info("Request to get Mock with id : {}", id);
@@ -55,6 +57,7 @@ public class MockResource {
         return new ResponseEntity<MockResponse>(createResponse(mock), HttpStatus.OK);
     }
 
+    @LogExecutionTime
     @PutMapping
     @Transactional
     public ResponseEntity<MockResponse> updateMock(@RequestBody MockDTO mock) throws MockNotFoundException, MoockApplicationException {
@@ -65,12 +68,14 @@ public class MockResource {
         return new ResponseEntity<>(createResponse(updatedMock), HttpStatus.OK);
     }
 
+    @LogExecutionTime
     @DeleteMapping("/{id}")
     public ResponseEntity<MockResponse> deleteMock(@PathVariable Long id) throws MockNotFoundException {
         mockService.deleteMockById(id);
         return new ResponseEntity<>(createResponse("Mock deleted", null), HttpStatus.OK);
     }
 
+    @LogExecutionTime
     @DeleteMapping
     public ResponseEntity<MockResponse> deleteMock() {
         mockService.deleteAllMocks();
