@@ -18,9 +18,8 @@ public class ResponseHeader extends AbstractEntity{
     @Column(name = "value", nullable = false)
     private String value;
 
-    @ManyToOne(targetEntity = Mock.class)
-    @JoinColumn(name = "mock")
-    private Mock mock;
+    @Column(name = "mock_id")
+    private Long mockId;
 
     public Long getId() {
         return id;
@@ -46,11 +45,11 @@ public class ResponseHeader extends AbstractEntity{
         this.value = value;
     }
 
-    public Mock getMock() {
-        return mock;
+    public Long getMockId() {
+        return mockId;
     }
 
-    public void setMock(Mock mock) {
-        this.mock = mock;
+    public void setMockId(Long mockId) {
+        this.mockId = mockId;
     }
 }

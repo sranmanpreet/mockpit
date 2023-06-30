@@ -17,6 +17,7 @@
 		<java.version>11</java.version>
 		<postgresql.version>42.6.0</postgresql.version>
 		<mapstruct.version>1.4.2.Final</mapstruct.version>
+		<graalvm-version>22.3.2</graalvm-version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -90,6 +91,16 @@
 			<artifactId>lombok</artifactId>
 			<version>1.18.22</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.sdk</groupId>
+			<artifactId>graal-sdk</artifactId>
+			<version>${graalvm-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.js</groupId>
+			<artifactId>js</artifactId>
+			<version>${graalvm-version}</version>
 		</dependency>
 	</dependencies>
 

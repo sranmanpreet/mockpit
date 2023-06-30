@@ -34,6 +34,13 @@ public class MockResource {
         return new ResponseEntity<MockResponse>(createResponse(mocks.size() + " Mocks found.",mocks), HttpStatus.OK);
     }
 
+    @LogExecutionTime
+    @GetMapping("/entities")
+    public ResponseEntity<MockResponse> getAllMockEntities() {
+        List<Mock> mocks = mockService.getAllMockEntities();
+        return new ResponseEntity<MockResponse>(createResponse(mocks.size() + " Mocks found.",mocks), HttpStatus.OK);
+    }
+
     @PostMapping
     @Transactional
     public ResponseEntity<MockResponse> createMock(@RequestBody MockDTO mock) throws MoockApplicationException {

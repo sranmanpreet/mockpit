@@ -12,6 +12,6 @@ public interface ResponseHeaderMapper {
     ResponseHeaderDTO toDto(ResponseHeader responseHeader);
     ResponseHeader toEntity(ResponseHeaderDTO responseHeaderDTO);
 
-    Set<ResponseHeaderDTO> toDTOList(List<ResponseHeader> headerList);
-    Set<ResponseHeader> toEntityList(List<ResponseHeaderDTO> headerDTOList);
+    List<ResponseHeaderDTO> toDTOList(List<ResponseHeader> headerList);
+    List<ResponseHeader> toEntityList(List<ResponseHeaderDTO> headerDTOList);
 }

@@ -22,10 +22,6 @@ public class ResponseBody extends AbstractEntity{
     @Column(name = "content_type", nullable = false)
     private String contentType;
 
-    @OneToOne(targetEntity = Mock.class)
-    @JoinColumn(name = "mock")
-    private Mock mock;
-
     public Long getId() {
         return id;
     }
@@ -56,13 +52,5 @@ public class ResponseBody extends AbstractEntity{
 
     public void setContentType(String contentType) {
         this.contentType = contentType;
-    }
-
-    public Mock getMock() {
-        return mock;
-    }
-
-    public void setMock(Mock mock) {
-        this.mock = mock;
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ResponseHeaderRepository extends JpaRepository<ResponseHeader, Long> {
 
-    @Query("DELETE FROM ResponseHeader rh WHERE rh.mock = :mockId")
+    @Query("DELETE FROM ResponseHeader rh WHERE rh.mockId = :mockId")
     void deleteByMockId(@Param("mockId") Long mockId);
 }
 

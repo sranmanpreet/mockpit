@@ -18,11 +18,21 @@ public class LiveService {
     @Autowired
     private MockDTOLiveResponseDTOMapper mockDtoToLiveResponseMapper;
 
+    @Autowired
+    private JavaScriptExecutionService jsExecutionService;
+
     public LiveResponseDTO getLiveResponse(String route, String method) {
         MockDTO mockDto = mockService.getMockByRouteAndMethod(route, method);
         if(Objects.isNull(mockDto)){
             return null;
         }
+        executeDynamicResponseBody(mockDto);
         return mockDtoToLiveResponseMapper.toLiveResponseDTO(mockDto);
+    }
+
+    private void executeDynamicResponseBody(MockDTO mockDTO){
+        if(mockDTO.getResponseBody().getType().equalsIgnoreCase("JAVASCRIPT")){
+            mockDTO.getResponseBody().setContent(jsExecutionService.execute(mockDTO.getResponseBody().getContent()));
+        }
     }
 }

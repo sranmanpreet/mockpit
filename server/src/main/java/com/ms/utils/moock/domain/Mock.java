@@ -20,20 +20,20 @@ public class Mock extends AbstractEntity {
 
     private String description;
 
-    @OneToOne(mappedBy = "mock", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "route_id")
     private Route route;
 
-    @OneToMany(mappedBy = "mock", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "mock_id")
     private List<ResponseHeader> responseHeaders = new ArrayList<>();
 
-    @OneToOne(mappedBy = "mock", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "response_body_id")
     private ResponseBody responseBody;
 
-    @OneToOne(mappedBy = "mock", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "response_status_id")
     private ResponseStatus responseStatus;
 
     public Mock(){}
@@ -98,4 +98,5 @@ public class Mock extends AbstractEntity {
     public void setResponseStatus(ResponseStatus responseStatus) {
         this.responseStatus = responseStatus;
     }
+
 }

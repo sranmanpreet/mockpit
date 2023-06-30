@@ -1,5 +1,6 @@
 package com.ms.utils.moock.web;
 
+import com.ms.utils.moock.aop.interceptor.LogExecutionTime;
 import com.ms.utils.moock.dto.LiveResponseDTO;
 import com.ms.utils.moock.service.LiveService;
 import org.slf4j.Logger;
@@ -24,11 +25,11 @@ public class LiveResource {
 
     private final Logger LOGGER = LoggerFactory.getLogger(LiveResource.class);
 
+    @LogExecutionTime
     @RequestMapping("/**")
     public ResponseEntity<Object> handleLiveRequests(HttpServletRequest request, HttpServletResponse response) {
         LOGGER.info("Request received by  LiveResource...");
         LOGGER.info(request.getRequestURI() + " " + request.getMethod());
-        LOGGER.info("Nano time : {}", System.nanoTime());
         LiveResponseDTO liveResponse = liveResponseService.getLiveResponse(request.getRequestURI(), request.getMethod());
         if(Objects.isNull(liveResponse)){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Oops! Resource not found.");

@@ -1,7 +1,5 @@
 package com.ms.utils.moock.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 
 @Entity
@@ -14,10 +12,6 @@ public class ResponseStatus extends AbstractEntity{
 
     @Column(name = "code", nullable = false)
     private int code;
-
-    @OneToOne(targetEntity = Mock.class)
-    @JoinColumn(name = "mock")
-    private Mock mock;
 
     public Long getId() {
         return id;
@@ -33,14 +27,6 @@ public class ResponseStatus extends AbstractEntity{
 
     public void setCode(int code) {
         this.code = code;
-    }
-
-    public Mock getMock() {
-        return mock;
-    }
-
-    public void setMock(Mock mock) {
-        this.mock = mock;
     }
 }
 
