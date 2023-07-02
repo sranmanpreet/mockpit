@@ -21,7 +21,7 @@ logging:
    level:
       root: INFO
       com.example.package: DEBUG
-   file: /server/log/moock.log
+   file: /server/log/mockpit.log
    configuration:
       status: warn
       appenders:
