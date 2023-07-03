@@ -1,4 +1,12 @@
-<div class="w-full h-12 flex justify-end items-center space-x-4 pr-4">
-    <button class="h-min">Manage Mocks</button>
-    <button class="google-button blue h-min">New Mock</button>
-</div>  
+<nav class="w-full h-12 flex justify-between items-center">
+    <a href="#" class="pl-4">
+        <!-- <img src="path/to/logo.png" alt="Logo"> -->
+        <h1 class="text-lg font-bold">
+            Mock<span class="text-red-400">pit</span>
+        </h1>
+    </a>
+    <ul class="space-x-4 pr-4">
+        <button class="h-min" [routerLink]="['manage']">Manage Mocks</button>
+        <button class="google-button blue h-min" [routerLink]="['mock/1']">New Mock</button>
+    </ul>
+</nav>

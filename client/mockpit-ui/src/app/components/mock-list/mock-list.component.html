@@ -1,0 +1,28 @@
+<div class="flex flex-col mt-[5vh] px-[2vw]">
+    <div class="sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full py-2 sm:px-3 lg:px-8">
+        <div class="">
+          <table class="min-w-full text-left text-sm font-light">
+            <thead class="border-b bg-neutral-800 text-white font-medium dark:border-neutral-500">
+              <tr>
+                <th scope="col" class="px-3 py-2">Name</th>
+                <th scope="col" class="px-3 py-2 hidden md:table-cell">Description</th>
+                <th scope="col" class="px-3 py-2 hidden lg:table-cell">Method</th>
+                <th scope="col" class="px-3 py-2 hidden lg:table-cell">Route</th>
+                <th scope="col" class="px-3 py-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b dark:border-neutral-500" *ngFor="let mock of mocks">
+                <td class="whitespace-nowrap px-3 py-2 font-medium">{{mock.name}}</td>
+                <td class="whitespace-nowrap px-3 py-2 hidden md:table-cell">{{mock.description}}</td>
+                <td class="whitespace-nowrap px-3 py-2 hidden lg:table-cell">{{mock.route.method}}</td>
+                <td class="whitespace-nowrap px-3 py-2 hidden lg:table-cell">{{mock.route.path}}</td>
+                <td class="whitespace-nowrap px-3 py-2">O E D</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>

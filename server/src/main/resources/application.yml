@@ -13,6 +13,12 @@ spring:
       properties:
          hibernate:
             dialect: org.hibernate.dialect.PostgreSQLDialect
+   mvc:
+      cors:
+         allowed-origins: http://localhost:4200
+         allowed-methods: "*"
+         allowed-headers: "*"
+
 
 server:
    port: 8080
