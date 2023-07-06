@@ -13,6 +13,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { MockListComponent } from './components/mock-list/mock-list.component';
 import { MockDetailComponent } from './components/mock-detail/mock-detail.component';
 import { ConfigService } from './services/config.service';
+import { ToastComponent } from './components/shared/toast/toast.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { ConfigService } from './services/config.service';
     ShellComponent,
     HeaderComponent,
     MockListComponent,
-    MockDetailComponent
+    MockDetailComponent,
+    ToastComponent
   ],
   imports: [
     BrowserModule,

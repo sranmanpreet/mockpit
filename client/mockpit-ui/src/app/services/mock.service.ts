@@ -18,4 +18,16 @@ export class MockService {
       return this.http.get(this.backendUrl + "/native/api/mocks");
   }
 
+  public getMockById(id: number | string | null): Observable<any> {
+    return this.http.get(this.backendUrl + "/native/api/mocks/" +id);
+  }
+
+  public deleteMockById(id: number){
+    return this.http.delete(this.backendUrl + "/native/api/mocks/"+id);
+  }
+
+  public deleteAllMocks(){
+    return this.http.delete(this.backendUrl + "/native/api/mocks");
+  }
+
 }

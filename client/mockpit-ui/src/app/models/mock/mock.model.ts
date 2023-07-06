@@ -1,4 +1,5 @@
 export interface Mock {
+  id: number,
   name: string,
   description: string,
   responseBody: ResponseBody,
@@ -9,6 +10,8 @@ export interface Mock {
 
 interface ResponseBody {
   content: any;
+  contentType: any;
+  type: any;
 }
 
 interface ResponseStatus {
