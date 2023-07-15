@@ -44,9 +44,14 @@ public class MockResource {
     @LogExecutionTime
     @PostMapping
     @Transactional
-    public ResponseEntity<MockResponse> createMock(@RequestBody MockDTO mock) throws MockpitApplicationException {
-        MockDTO savedMock = mockService.createMock(mock);
-        return new ResponseEntity<>(createResponse(savedMock), HttpStatus.CREATED);
+    public ResponseEntity<MockResponse> saveMock(@RequestBody MockDTO mock) throws MockpitApplicationException, MockNotFoundException {
+        if(Objects.nonNull(mock.getId())){
+            MockDTO updatedMock = mockService.updateMock(mock);
+            return new ResponseEntity<>(createResponse(updatedMock), HttpStatus.OK);
+        } else {
+            MockDTO savedMock = mockService.createMock(mock);
+            return new ResponseEntity<>(createResponse(savedMock), HttpStatus.CREATED);
+        }
     }
 
     @LogExecutionTime
@@ -55,17 +60,6 @@ public class MockResource {
         LOGGER.info("Request to get Mock with id : {}", id);
         MockDTO mock = mockService.getMockById(id);
         return new ResponseEntity<MockResponse>(createResponse(mock), HttpStatus.OK);
-    }
-
-    @LogExecutionTime
-    @PutMapping
-    @Transactional
-    public ResponseEntity<MockResponse> updateMock(@RequestBody MockDTO mock) throws MockNotFoundException, MockpitApplicationException {
-        if(Objects.isNull(mock.getId())){
-            throw new MockNotFoundException("Please provide Mock Id for the mock you want to update.");
-        }
-        MockDTO updatedMock = mockService.updateMock(mock);
-        return new ResponseEntity<>(createResponse(updatedMock), HttpStatus.OK);
     }
 
     @LogExecutionTime
