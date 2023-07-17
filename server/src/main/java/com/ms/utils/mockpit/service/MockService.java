@@ -105,7 +105,7 @@ public class MockService {
     public MockDTO getMockById(Long id) throws MockNotFoundException {
         Optional<Mock> mock = mockRepository.findById(id);
         if(!mock.isPresent()){
-            throw new MockNotFoundException("No Mock found with id "+id);
+            throw new MockNotFoundException("Requested Mock not found");
         }
         return mockMapper.toDto(mock.get());
     }

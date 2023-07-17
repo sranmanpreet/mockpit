@@ -2,6 +2,7 @@ export interface Mock {
   id: number,
   name: string,
   description: string,
+  active?: boolean,
   responseBody: ResponseBody,
   responseStatus: ResponseStatus,
   route: Route,

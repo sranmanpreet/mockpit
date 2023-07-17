@@ -17,6 +17,10 @@ const routes: Routes = [
         component: MockListComponent
       },
       {
+        path: 'mock/new',
+        component: MockDetailComponent
+      },
+      {
         path: 'mock/:id',
         component: MockDetailComponent
       }
