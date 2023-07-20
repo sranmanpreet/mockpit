@@ -2,6 +2,7 @@ import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -14,7 +15,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { MockListComponent } from './components/mock-list/mock-list.component';
 import { MockDetailComponent } from './components/mock-detail/mock-detail.component';
 import { ConfigService } from './services/config.service';
-import { ToastComponent } from './components/shared/toast/toast.component';
+import { ToastrModule } from 'ngx-toastr';
 
 
 @NgModule({
@@ -24,14 +25,20 @@ import { ToastComponent } from './components/shared/toast/toast.component';
     ShellComponent,
     HeaderComponent,
     MockListComponent,
-    MockDetailComponent,
-    ToastComponent
+    MockDetailComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(
+      {
+        timeOut: 5000,
+        positionClass: 'toast-bottom-right'
+      }
+    )
   ],
   providers: [
   ],

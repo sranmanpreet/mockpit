@@ -6,7 +6,15 @@
         </h1>
     </a>
     <ul class="space-x-4 pr-4">
-        <button class="h-min" [routerLink]="['manage']">Manage Mocks</button>
+        <!-- Add a hidden input element to handle file selection -->
+        <input type="file" #fileInput class="hidden" (change)="onFileSelected($event)" accept=".json" capture="user"/>
+
+        <!-- Button to trigger file selection -->
+        <button (click)="fileInput.click()">Import</button>
+
+
+        <button class="h-min" (click)="onExport()">Export</button>
+        <button class="google-button orange h-min" [routerLink]="['manage']">Manage Mocks</button>
         <button class="google-button blue h-min" [routerLink]="['mock/new']">New Mock</button>
     </ul>
 </nav>

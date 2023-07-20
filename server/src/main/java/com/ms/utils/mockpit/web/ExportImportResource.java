@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/native/api/mocks/")
@@ -32,10 +34,11 @@ public class ExportImportResource {
         try {
             byte[] exportedData = exportImportService.exportMocks();
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             headers.setContentDisposition(ContentDisposition.builder("attachment")
                     .filename("mocks.json")
                     .build());
+            headers.setAccessControlExposeHeaders(Arrays.asList(HttpHeaders.CONTENT_DISPOSITION));
             return new ResponseEntity<>(exportedData, headers, HttpStatus.OK);
         } catch (IOException e) {
             // Handle the exception appropriately

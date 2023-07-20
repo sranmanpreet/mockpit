@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
+
+import { ToastrService } from 'ngx-toastr';
+
 import { Mock, MockResponse } from 'src/app/models/mock/mock.model';
 import { MockService } from 'src/app/services/mock.service';
 
@@ -19,7 +22,7 @@ export class MockDetailComponent implements OnInit {
 
   errorMessage?: string;
 
-  constructor(private route: ActivatedRoute, private router: Router, private mockService: MockService) {
+  constructor(private route: ActivatedRoute, private router: Router, private mockService: MockService, private toast: ToastrService) {
     this.initialize();
   }
 
@@ -66,13 +69,13 @@ export class MockDetailComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.mockForm.value);
     this.mockService.saveMock(this.mockForm.value).subscribe(
       (response: MockResponse) => {
-        this.mock = response.data
+        this.mock = response.data;
+        this.toast.success("Mock saved", "Success");
       },
       (error)=>{
-
+        this.toast.error(error.error.message, "Error");
       });
   }
 
@@ -84,6 +87,7 @@ export class MockDetailComponent implements OnInit {
     this.mockService.deleteMockById(this.mock?.id).subscribe(
       (data)=> {
         console.log(data);
+        this.toast.success("Mock deleted.", "Success");
         this.router.navigate(['/manage']);
       },
       (error)=>console.log(error)

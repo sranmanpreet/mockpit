@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { ConfigService } from './config.service';
@@ -36,6 +36,17 @@ export class MockService {
 
   public deleteAllMocks(){
     return this.http.delete(this.backendUrl + "/native/api/mocks");
+  }
+
+  public exportAllMocks() {
+    return this.http.get(this.backendUrl + "/native/api/mocks/export", {
+      responseType: 'arraybuffer',
+      observe: 'response'
+    });
+  }
+
+  public importMocks(data: FormData) : Observable<MockResponse>{
+    return this.http.post(this.backendUrl + "/native/api/mocks/import", data) as Observable<MockResponse>;
   }
 
 }

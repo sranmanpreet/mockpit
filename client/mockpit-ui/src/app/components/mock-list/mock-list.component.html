@@ -20,7 +20,6 @@
                 <td class="whitespace-nowrap px-3 py-2 hidden lg:table-cell">{{mock.route.path}}</td>
                 <td class="whitespace-nowrap px-3 py-2">
                   <div class="flex">
-                    <a class="m-auto hover:bg-slate-300" href="{{mockService.backendUrl}}{{mock.route.path}}" target="_blank"><img class="w-5 h-5" src="./../../../assets/icons/launch.svg" alt="Search Icon"></a>
                     <img class="m-auto w-5 h-5 cursor-pointer hover:bg-slate-300" src="./../../../assets/icons/open.svg" alt="Open Icon" routerLink="/mock/{{mock.id}}">
                     <img class="m-auto w-5 h-5 cursor-pointer hover:bg-slate-300" src="./../../../assets/icons/delete.svg" alt="Delete Icon" (click)="deleteMock(mock.id)">
                   </div>
