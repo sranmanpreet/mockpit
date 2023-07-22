@@ -10,6 +10,8 @@ import com.ms.utils.mockpit.service.MockService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,16 +31,9 @@ public class MockResource {
 
     @LogExecutionTime
     @GetMapping
-    public ResponseEntity<MockResponse> getAllMock() {
-        List<MockDTO> mocks = mockService.getAllMocks();
-        return new ResponseEntity<MockResponse>(createResponse(mocks.size() + " Mocks found.",mocks), HttpStatus.OK);
-    }
-
-    @LogExecutionTime
-    @GetMapping("/entities")
-    public ResponseEntity<MockResponse> getAllMockEntities() {
-        List<Mock> mocks = mockService.getAllMockEntities();
-        return new ResponseEntity<MockResponse>(createResponse(mocks.size() + " Mocks found.",mocks), HttpStatus.OK);
+    public ResponseEntity<MockResponse> getAllMocks(Pageable pageable) {
+        Page<MockDTO> mockDTOPage = mockService.getAllMocks(pageable);
+        return new ResponseEntity<MockResponse>(createResponse(mockDTOPage), HttpStatus.OK);
     }
 
     @LogExecutionTime
@@ -78,8 +73,8 @@ public class MockResource {
 
     @LogExecutionTime
     @GetMapping("/search")
-    public ResponseEntity<MockResponse> search(@RequestParam String query) {
-        return new ResponseEntity<>(createResponse("Search results for '"+ query + "'", mockService.performSearch(query)), HttpStatus.OK);
+    public ResponseEntity<MockResponse> search(@RequestParam String query, Pageable pageable) {
+        return new ResponseEntity<>(createResponse("Search results for '"+ query + "'", mockService.performSearch(query, pageable)), HttpStatus.OK);
     }
 
     private MockResponse createResponse(String message, Object data){

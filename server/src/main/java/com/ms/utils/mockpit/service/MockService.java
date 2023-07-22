@@ -11,6 +11,8 @@ import com.ms.utils.mockpit.repository.*;
 import com.ms.utils.mockpit.validator.MockValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -45,16 +47,10 @@ public class MockService {
     @Autowired
     private MockValidator mockValidator;
 
-    public List<MockDTO> getAllMocks() {
-        List<Mock> mocks = mockRepository.findAll();
+    public Page<MockDTO> getAllMocks(Pageable pageable) {
+        Page<Mock> mockPage = mockRepository.findAll(pageable);
 
-        return mockMapper.toDTOList(mocks);
-    }
-
-    public List<Mock> getAllMockEntities() {
-        List<Mock> mocks = mockRepository.findAll();
-
-        return mocks;
+        return mockPage.map(mockMapper::toDto);
     }
 
     public MockDTO createMock(MockDTO mockDTO) throws MockpitApplicationException {
@@ -105,7 +101,8 @@ public class MockService {
     public MockDTO getMockById(Long id) throws MockNotFoundException {
         Optional<Mock> mock = mockRepository.findById(id);
         if(!mock.isPresent()){
-            throw new MockNotFoundException("Requested Mock not found");
+            throw new MockNotFoundException("Requeste" +
+                    "d Mock not found");
         }
         return mockMapper.toDto(mock.get());
     }
@@ -128,8 +125,8 @@ public class MockService {
 
     public void deleteAllMocks() { mockRepository.deleteAll(); }
 
-    public List<MockDTO> performSearch(String query) {
-        List<Mock> mocks = mockRepository.searchMocks(query);
-        return mockMapper.toDTOList(mocks);
+    public Page<MockDTO> performSearch(String query, Pageable pageable) {
+        Page<Mock> mockPage = mockRepository.searchMocks(query, pageable);
+        return mockPage.map(mockMapper::toDto);
     }
 }

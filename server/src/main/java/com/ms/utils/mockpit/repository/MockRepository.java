@@ -23,10 +23,10 @@ public interface MockRepository extends JpaRepository<Mock, Long> {
     List<Mock> findByRouteAndMethod(@Param("route") String route, @Param("method") String method);
 
     @Query("SELECT m FROM Mock m " +
-            "LEFT JOIN FETCH m.route r " +
-            "LEFT JOIN FETCH m.responseBody rb " +
+            "LEFT JOIN m.route r " +
+            "LEFT JOIN m.responseBody rb " +
             "WHERE m.name LIKE %:query% OR m.description LIKE %:query% " +
             "OR r.path LIKE %:query% OR rb.content LIKE %:query%")
-    List<Mock> searchMocks(@Param("query") String query);
+    Page<Mock> searchMocks(@Param("query") String query, Pageable pageable);
 }
 
