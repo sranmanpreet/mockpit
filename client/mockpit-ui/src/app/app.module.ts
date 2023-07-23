@@ -3,6 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -38,7 +40,9 @@ import { ToastrModule } from 'ngx-toastr';
         timeOut: 5000,
         positionClass: 'toast-bottom-right'
       }
-    )
+    ),
+    MatTableModule,
+    MatPaginatorModule
   ],
   providers: [
   ],

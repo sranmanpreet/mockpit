@@ -1,4 +1,4 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { ConfigService } from './config.service';
@@ -14,8 +14,9 @@ export class MockService {
     this.backendUrl = this.configService.getConfig().backendUrl;
   }
   
-  public getMocks() : Observable<any> {
-      return this.http.get(this.backendUrl + "/native/api/mocks");
+  public getMocks(pageNo?: number, pageSize?:number) : Observable<any> {
+    const options = pageNo!=undefined && pageSize!=undefined? { params: new HttpParams().set('page', pageNo).set('size', pageSize) } : {};
+    return this.http.get(this.backendUrl + "/native/api/mocks", options);
   }
 
   public getMockById(id: number | string | null): Observable<any> {

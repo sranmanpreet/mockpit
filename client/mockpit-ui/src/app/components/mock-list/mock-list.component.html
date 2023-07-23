@@ -1,33 +1,52 @@
 <div class="flex flex-col mt-[5vh] px-[2vw]">
-    <div class="sm:-mx-6 lg:-mx-8">
-      <div class="inline-block min-w-full py-2 sm:px-3 lg:px-8">
-        <div class="">
-          <table class="min-w-full text-left text-sm font-light">
-            <thead class="border-b bg-neutral-800 text-white font-medium dark:border-neutral-500">
-              <tr>
-                <th scope="col" class="px-3 py-2">Name</th>
-                <th scope="col" class="px-3 py-2 hidden md:table-cell">Description</th>
-                <th scope="col" class="px-3 py-2 hidden lg:table-cell">Method</th>
-                <th scope="col" class="px-3 py-2 hidden lg:table-cell">Route</th>
-                <th scope="col" class="px-3 py-2">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="border-b dark:border-neutral-500" *ngFor="let mock of mocks">
-                <td class="whitespace-nowrap px-3 py-2 font-medium">{{mock.name}}</td>
-                <td class="whitespace-nowrap px-3 py-2 hidden md:table-cell">{{mock.description}}</td>
-                <td class="whitespace-nowrap px-3 py-2 hidden lg:table-cell">{{mock.route.method}}</td>
-                <td class="whitespace-nowrap px-3 py-2 hidden lg:table-cell">{{mock.route.path}}</td>
-                <td class="whitespace-nowrap px-3 py-2">
-                  <div class="flex">
-                    <img class="m-auto w-5 h-5 cursor-pointer hover:bg-slate-300" src="./../../../assets/icons/open.svg" alt="Open Icon" routerLink="/mock/{{mock.id}}">
-                    <img class="m-auto w-5 h-5 cursor-pointer hover:bg-slate-300" src="./../../../assets/icons/delete.svg" alt="Delete Icon" (click)="deleteMock(mock.id)">
-                  </div>
-                </td>
-              </tr>
-            </tbody>
+  <div class="sm:-mx-6 lg:-mx-8">
+    <div class="inline-block min-w-full py-2 sm:px-3 lg:px-8">
+      <div class="">
+        <div class="mat-elevation-z8">
+          <table mat-table [dataSource]="dataSource" class="min-w-full text-left text-sm font-light">
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef> Name </th>
+              <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="description">
+              <th mat-header-cell *matHeaderCellDef> Description </th>
+              <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+            </ng-container>
+
+            <!-- Weight Column -->
+            <ng-container matColumnDef="method">
+              <th mat-header-cell *matHeaderCellDef> Method </th>
+              <td mat-cell *matCellDef="let element"> {{element.route.method}} </td>
+            </ng-container>
+
+            <!-- Symbol Column -->
+            <ng-container matColumnDef="path">
+              <th mat-header-cell *matHeaderCellDef> Path </th>
+              <td mat-cell *matCellDef="let element"> {{element.route.path}} </td>
+            </ng-container>
+
+            <!-- Symbol Column -->
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef> Actions </th>
+              <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
+
+          <mat-paginator 
+            (page)="handlePageEvent($event)" [length]="length"
+            [pageSize]="pageSize" [disabled]="disabled" [showFirstLastButtons]="showFirstLastButtons"
+            [pageSizeOptions]="showPageSizeOptions ? pageSizeOptions : []" [hidePageSize]="hidePageSize"
+            [pageIndex]="pageIndex" showFirstLastButtons aria-label="Select page of periodic elements">
+          </mat-paginator>
         </div>
       </div>
     </div>
   </div>
+</div>
