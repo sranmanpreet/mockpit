@@ -50,4 +50,8 @@ export class MockService {
     return this.http.post(this.backendUrl + "/native/api/mocks/import", data) as Observable<MockResponse>;
   }
 
+  public search(query: string) : Observable<MockResponse>{
+    return this.http.get(this.backendUrl +'/native/api/mocks/search?query='+query) as Observable<MockResponse>;
+  }
+
 }

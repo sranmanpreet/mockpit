@@ -1,0 +1,103 @@
+<div class="mx-auto my-6 w-[90%] md:w-[80%] lg:w-[60%]">
+    <form [formGroup]="mockForm" *ngIf="mockForm" (ngSubmit)="onSubmit()">
+        <div class="grid gap-6 mb-6 grid-cols-1">
+            <div class="flex flex-col lg:flex-row lg:space-x-6">
+                <div class="mb-6 basis-1/2">
+                    <label for="mock_name"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
+                    <input type="text" id="mock_name"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Get Notes" required formControlName="name">
+                </div>
+                <div class="mb-6 basis-1/3">
+                    <label for="description"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                    <textarea id="description" rows="4"
+                        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Returns list of all the tasks planned for the day."
+                        formControlName="description"></textarea>
+                </div>
+                <div class="mb-6 basis-1/6 justify-self-end">
+                    <input id="default-checkbox" type="checkbox"
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        formControlName="active">
+                    <label for="default-checkbox"
+                        class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Active</label>
+                </div>
+            </div>
+            <div formGroupName="route" class="flex flex-col lg:flex-row lg:space-x-6">
+                <div class="mb-6 basis-1/4">
+                    <label for="method"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Method</label>
+                    <select id="method"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" formControlName="method">
+                        <option selected>GET</option>
+                        <option value="POST">POST</option>
+                        <option value="PUT">PUT</option>
+                        <option value="PATCH">PATCH</option>
+                        <option value="DELETE">DELETE</option>
+                        <option value="OPTIONS">OPTIONS</option>
+                    </select>
+                </div>
+                <div class="mb-6 basis-3/4">
+                    <label for="route"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Route</label>
+                    <input type="text" id="route"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="/task-service/api/tasks" required
+                        formControlName="path">
+                </div>
+            </div>
+            <div formGroupName="responseStatus">
+                <label for="status-code" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status
+                    Code</label>
+                <input type="number" id="status-code"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="200" required formControlName="code">
+            </div>
+            <div formGroupName="responseBody">
+                <div class="flex flex-row justify-between space-x-6">
+                    <div class="mb-6 basis-1/2">
+                        <label for="response-body-type"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Response
+                            Body Type</label>
+                        <select id="response-body-type"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            formControlName="type">
+                            <option value="STATIC" selected>Static</option>
+                            <option value="JAVASCRIPT">JavaScript</option>
+                        </select>
+                    </div>
+                    <div class="mb-6 basis-1/2">
+                        <label for="content-type"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Content
+                            Type</label>
+                        <select id="content-type"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            formControlName="contentType">
+                            <option selected>application/json</option>
+                            <option value="application/text">application/text</option>
+                            <option value="application/xml">application/xml</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label for="response-body-content"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Response Body
+                        Content</label>
+                    <textarea id="response-body-content" rows="15"
+                        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="[{'title' : 'Buy Grocery'}, {'title': 'Pay Electricity Bill'},{'title': 'Mow Lawn'}]"
+                        formControlName="content"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="actions flex space-x-6">
+            <button type="submit" class="google-button blue h-min">Save</button>
+            <button type="button" class="google-button h-min" (click)="onCancel()">Cancel</button>
+        </div>
+    </form>
+    <div class="error h-[50vh] w-full flex" *ngIf="errorMessage">
+        <p class="self-center justify-self-center m-auto text-2xl">{{errorMessage}}</p>
+    </div>
+</div>

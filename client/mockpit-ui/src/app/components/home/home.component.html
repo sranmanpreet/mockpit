@@ -7,8 +7,16 @@
     <form class="mt-[8vh] mx-24 w-5/6 max-w-prose">
         <div class="border rounded-full overflow-hidden shadow-md flex">
             <img class="m-auto ml-4 w-5 h-5" src="./../../../assets/icons/search.svg" alt="Search Icon">
-            <input class="w-full px-4 py-2 outline-none" type="text" placeholder="Search your mocks" title="Search">
+            <input class="w-full px-4 py-2 outline-none" type="text" placeholder="Search your mocks" title="Search"
+                (keyup)="search(getValue($event))">
         </div>
+        <ul>
+            <li *ngFor="let mock of mocks$ | async">
+                <div class="my-3 border-b-2 border-slate-200 cursor-pointer" (click)="onClickOnSearchResult(mock.id)">
+                    <p><strong>{{mock.name}}</strong> <span class="mx-3">{{mock.route.method}}</span>{{mock.route.path}}</p>
+                </div>
+            </li>
+        </ul>
     </form>
     <div class="flex space-x-4 mt-[5vh]">
         <button>Search</button>

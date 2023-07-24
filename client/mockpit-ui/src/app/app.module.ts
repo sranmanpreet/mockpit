@@ -18,6 +18,7 @@ import { MockListComponent } from './components/mock-list/mock-list.component';
 import { MockDetailComponent } from './components/mock-detail/mock-detail.component';
 import { ConfigService } from './services/config.service';
 import { ToastrModule } from 'ngx-toastr';
+import { NewMockComponent } from './components/new-mock/new-mock.component';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { ToastrModule } from 'ngx-toastr';
     ShellComponent,
     HeaderComponent,
     MockListComponent,
-    MockDetailComponent
+    MockDetailComponent,
+    NewMockComponent
   ],
   imports: [
     BrowserModule,

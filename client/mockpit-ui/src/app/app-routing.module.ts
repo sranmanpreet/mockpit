@@ -4,6 +4,7 @@ import { ShellComponent } from './components/shell/shell.component';
 import { HomeComponent } from './components/home/home.component';
 import { MockListComponent } from './components/mock-list/mock-list.component';
 import { MockDetailComponent } from './components/mock-detail/mock-detail.component';
+import { NewMockComponent } from './components/new-mock/new-mock.component';
 
 const routes: Routes = [
   {
@@ -18,7 +19,7 @@ const routes: Routes = [
       },
       {
         path: 'mock/new',
-        component: MockDetailComponent
+        component: NewMockComponent
       },
       {
         path: 'mock/:id',
