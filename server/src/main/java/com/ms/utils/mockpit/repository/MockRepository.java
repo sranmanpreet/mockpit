@@ -25,8 +25,11 @@ public interface MockRepository extends JpaRepository<Mock, Long> {
     @Query("SELECT m FROM Mock m " +
             "LEFT JOIN m.route r " +
             "LEFT JOIN m.responseBody rb " +
-            "WHERE m.name LIKE %:query% OR m.description LIKE %:query% " +
-            "OR r.path LIKE %:query% OR rb.content LIKE %:query%")
+            "WHERE (:query IS NOT NULL AND :query != '') " +
+            "AND (UPPER(m.name) LIKE UPPER(CONCAT('%', :query, '%')) " +
+            "OR UPPER(m.description) LIKE UPPER(CONCAT('%', :query, '%')) " +
+            "OR UPPER(r.path) LIKE UPPER(CONCAT('%', :query, '%')) " +
+            "OR UPPER(rb.content) LIKE UPPER(CONCAT('%', :query, '%')))")
     Page<Mock> searchMocks(@Param("query") String query, Pageable pageable);
 }
 

@@ -1,8 +1,8 @@
 <div class="flex flex-col mt-[5vh] px-[2vw]">
   <div class="sm:-mx-6 lg:-mx-8">
     <div class="inline-block min-w-full py-2 sm:px-3 lg:px-8">
-      <div class="">
-        <div class="mat-elevation-z8">
+      <div>
+        <div class="mat-elevation-z8" *ngIf="mocks && mocks.length">
           <table mat-table [dataSource]="dataSource" class="min-w-full text-left text-sm font-light">
 
             <!-- Position Column -->
@@ -50,6 +50,9 @@
             [pageSizeOptions]="showPageSizeOptions ? pageSizeOptions : []" [hidePageSize]="hidePageSize"
             [pageIndex]="pageIndex" showFirstLastButtons aria-label="Select page of periodic elements">
           </mat-paginator>
+        </div>
+        <div *ngIf="mocks && !mocks.length && !isLoading" class="w-full h-[70vh] text-center">
+          <span class="m-auto text-2xl">Create your first mock by clicking <strong class="block">'New Mock'</strong></span>
         </div>
       </div>
     </div>

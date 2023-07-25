@@ -17,6 +17,7 @@ import { MockService } from 'src/app/services/mock.service';
 })
 export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
   mocks: Array<Mock> = [];
+  isLoading: boolean = false;
 
   displayedColumns: string[] = ['name', 'description', 'method', 'path', 'action'];
   dataSource: any;
@@ -64,10 +65,12 @@ export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   initializeMocks(pageNo?: number, pageSize?:number) {
+    this.isLoading = true;
     this.mockService.getMocks(pageNo, pageSize).subscribe((response: MockResponse) => {
       this.mocks = response.data.content;
       this.dataSource = new MatTableDataSource<Mock>(this.mocks);
       this.length = response.data.totalElements;
+      this.isLoading = false;
     });
   }
 

@@ -51,7 +51,7 @@ public class ExportImportResource {
     @PostMapping("/import")
     public ResponseEntity<String> importMocks(@RequestParam("file") MultipartFile file) throws MockpitApplicationException, IOException {
         exportImportService.importMocks(file);
-        return new ResponseEntity(createResponse("Mocks imported successfully"), HttpStatus.OK);
+        return new ResponseEntity(createResponse("Mocks imported successfully", null), HttpStatus.OK);
     }
 
     private MockResponse createResponse(String message, Object data){

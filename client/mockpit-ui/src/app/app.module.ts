@@ -19,6 +19,7 @@ import { MockDetailComponent } from './components/mock-detail/mock-detail.compon
 import { ConfigService } from './services/config.service';
 import { ToastrModule } from 'ngx-toastr';
 import { NewMockComponent } from './components/new-mock/new-mock.component';
+import { SearchComponent } from './components/search/search.component';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { NewMockComponent } from './components/new-mock/new-mock.component';
     HeaderComponent,
     MockListComponent,
     MockDetailComponent,
-    NewMockComponent
+    NewMockComponent,
+    SearchComponent
   ],
   imports: [
     BrowserModule,
