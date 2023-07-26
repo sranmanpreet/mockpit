@@ -3,6 +3,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { ToastrService } from 'ngx-toastr';
+import { Observable } from 'rxjs';
 
 import { Mock, MockResponse } from 'src/app/models/mock/mock.model';
 import { MockService } from 'src/app/services/mock.service';
@@ -18,6 +19,7 @@ import { MockService } from 'src/app/services/mock.service';
 export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
   mocks: Array<Mock> = [];
   isLoading: boolean = false;
+  searchResults$?: Observable<Mock[]>;
 
   displayedColumns: string[] = ['name', 'description', 'method', 'path', 'action'];
   dataSource: any;
@@ -72,6 +74,10 @@ export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
       this.length = response.data.totalElements;
       this.isLoading = false;
     });
+  }
+
+  setSearchResults(mocks: Observable<Mock[]>){
+    console.log(mocks);
   }
 
   deleteMock(id: number) {

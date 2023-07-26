@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subject, debounceTime, distinctUntilChanged, map, switchMap, takeUntil } from 'rxjs';
 import { Mock } from 'src/app/models/mock/mock.model';
@@ -10,6 +10,9 @@ import { MockService } from 'src/app/services/mock.service';
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit, OnDestroy{
+
+  @Output() mocksSearched = new EventEmitter<Observable<Mock[]>>();
+
   withRefresh = false;
   mocks$!: Observable<Mock[]>;
   private searchText$ = new Subject<string>();
@@ -25,13 +28,15 @@ export class SearchComponent implements OnInit, OnDestroy{
     this.mocks$ = this.searchText$.pipe(takeUntil(this.unsubscribeAll$),
       debounceTime(500),
       distinctUntilChanged(),
-      switchMap(packageName =>
-        this.mockService.search(packageName).pipe(map(mockResponse=> mockResponse.data.content)))
+      switchMap(query =>
+        this.mockService.search(query).pipe(map(mockResponse=> mockResponse.data.content)))
     );
+    
   }
 
   search(query: string) {
       this.searchText$.next(query);
+      this.mocksSearched.emit(this.mocks$);
   }
 
   getValue(event: Event): string {

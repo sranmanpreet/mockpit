@@ -2,6 +2,9 @@
   <div class="sm:-mx-6 lg:-mx-8">
     <div class="inline-block min-w-full py-2 sm:px-3 lg:px-8">
       <div>
+        <div class="flex space-x-4 my-4">
+          <mockpit-search (mocksSearched)="setSearchResults($event)" ></mockpit-search>
+        </div>
         <div class="mat-elevation-z8" *ngIf="mocks && mocks.length">
           <table mat-table [dataSource]="dataSource" class="min-w-full text-left text-sm font-light">
 

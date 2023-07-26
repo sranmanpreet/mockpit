@@ -50,8 +50,10 @@ export class MockService {
     return this.http.post(this.backendUrl + "/native/api/mocks/import", data) as Observable<MockResponse>;
   }
 
-  public search(query: string) : Observable<MockResponse>{
-    return this.http.get(this.backendUrl +'/native/api/mocks/search?query='+query) as Observable<MockResponse>;
+  public search(query: string, pageSize?: number) : Observable<MockResponse>{
+    pageSize = 50;
+    const options = pageSize!=undefined? { params: new HttpParams().set('size', pageSize) } : {};
+    return this.http.get(this.backendUrl +'/native/api/mocks/search?query='+query, options) as Observable<MockResponse>;
   }
 
 }
