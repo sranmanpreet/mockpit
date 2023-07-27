@@ -2,8 +2,20 @@
   <div class="sm:-mx-6 lg:-mx-8">
     <div class="inline-block min-w-full py-2 sm:px-3 lg:px-8">
       <div>
-        <div class="flex space-x-4 my-4">
-          <mockpit-search (mocksSearched)="setSearchResults($event)" ></mockpit-search>
+        <div class="flex space-x-4 justify-between my-4">
+          <mockpit-search class="basis-2/3" (mocksSearched)="setSearchResults($event)" [hideSearchResults]="true"></mockpit-search>
+          <div class="space-x-4">
+            <!-- Add a hidden input element to handle file selection -->
+            <input type="file" #fileInput class="hidden" (change)="onFileSelected($event)" accept=".json"
+              capture="user" />
+  
+            <!-- Button to trigger file selection -->
+            <button class="h-min" (click)="fileInput.click()">Import</button>
+  
+  
+            <button class="h-min" (click)="onExport()">Export</button>
+
+          </div>
         </div>
         <div class="mat-elevation-z8" *ngIf="mocks && mocks.length">
           <table mat-table [dataSource]="dataSource" class="min-w-full text-left text-sm font-light">
@@ -37,8 +49,10 @@
               <th mat-header-cell *matHeaderCellDef> Actions </th>
               <td mat-cell *matCellDef="let element">
                 <div class="flex">
-                  <img class="m-auto w-5 h-5 cursor-pointer hover:bg-slate-300" src="./../../../assets/icons/open.svg" alt="Open Icon" routerLink="/mock/{{element.id}}">
-                  <img class="m-auto w-5 h-5 cursor-pointer hover:bg-slate-300" src="./../../../assets/icons/delete.svg" alt="Delete Icon" (click)="deleteMock(element.id)">
+                  <img class="m-auto w-5 h-5 cursor-pointer hover:bg-slate-300" src="./../../../assets/icons/open.svg"
+                    alt="Open Icon" routerLink="/mock/{{element.id}}">
+                  <img class="m-auto w-5 h-5 cursor-pointer hover:bg-slate-300" src="./../../../assets/icons/delete.svg"
+                    alt="Delete Icon" (click)="deleteMock(element.id)">
                 </div>
               </td>
             </ng-container>
@@ -47,15 +61,15 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
 
-          <mat-paginator 
-            (page)="handlePageEvent($event)" [length]="length"
-            [pageSize]="pageSize" [disabled]="disabled" [showFirstLastButtons]="showFirstLastButtons"
-            [pageSizeOptions]="showPageSizeOptions ? pageSizeOptions : []" [hidePageSize]="hidePageSize"
-            [pageIndex]="pageIndex" showFirstLastButtons aria-label="Select page of periodic elements">
+          <mat-paginator (page)="handlePageEvent($event)" [length]="length" [pageSize]="pageSize" [disabled]="disabled"
+            [showFirstLastButtons]="showFirstLastButtons" [pageSizeOptions]="showPageSizeOptions ? pageSizeOptions : []"
+            [hidePageSize]="hidePageSize" [pageIndex]="pageIndex" showFirstLastButtons
+            aria-label="Select page of periodic elements">
           </mat-paginator>
         </div>
         <div *ngIf="mocks && !mocks.length && !isLoading" class="w-full h-[70vh] text-center">
-          <span class="m-auto text-2xl">Create your first mock by clicking <strong class="block">'New Mock'</strong></span>
+          <span class="m-auto text-2xl">Create your first mock by clicking <strong class="block">'New
+              Mock'</strong></span>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subject, debounceTime, distinctUntilChanged, map, switchMap, takeUntil } from 'rxjs';
 import { Mock } from 'src/app/models/mock/mock.model';
@@ -11,6 +11,7 @@ import { MockService } from 'src/app/services/mock.service';
 })
 export class SearchComponent implements OnInit, OnDestroy{
 
+  @Input() hideSearchResults:boolean = false;
   @Output() mocksSearched = new EventEmitter<Observable<Mock[]>>();
 
   withRefresh = false;
