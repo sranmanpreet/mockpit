@@ -1,12 +1,12 @@
-<form class="w-full">
+<form class="w-full h-fit relative">
     <div class="border rounded-full overflow-hidden shadow-md flex">
         <img class="m-auto ml-4 w-5 h-5" src="./../../../assets/icons/search.svg" alt="Search Icon">
         <input class="w-full px-4 py-2 outline-none" type="text" placeholder="Search your mocks" title="Search"
             (keyup)="search(getValue($event))">
     </div>
-    <ul class="max-h-[30vh] mt-2 px-4 border shadow-md overflow-y-scroll" *ngIf="!hideSearchResults && (mocks$ | async)">
-        <li *ngFor="let mock of mocks$ | async">
-            <div class="my-3 border-b-2 border-slate-200 cursor-pointer" (click)="onClickOnSearchResult(mock.id)">
+    <ul class="w-full mt-2 bg-white max-h-[30vh] px-1 shadow-md overflow-y-scroll absolute" *ngIf="(mocks$ | async) as mocks">
+        <li *ngFor="let mock of mocks">
+            <div class="p-1 border-b-2 border-slate-200 hover:bg-zinc-100 cursor-pointer" (click)="onClickOnSearchResult(mock.id)">
                 <p><strong>{{mock.name}}</strong> <span class="mx-3">{{mock.route.method}}</span>{{mock.route.path}}</p>
             </div>
         </li>

@@ -5,7 +5,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { ToastrService } from 'ngx-toastr';
-import { Observable } from 'rxjs';
+import { Observable, Subject, map, switchMap, takeUntil } from 'rxjs';
 
 import { Mock, MockResponse } from 'src/app/models/mock/mock.model';
 import { MockService } from 'src/app/services/mock.service';
@@ -20,7 +20,8 @@ import { HttpResponse } from '@angular/common/http';
   }
 })
 export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
-  mocks: Array<Mock> = [];
+  mocks$: Subject<Mock[]> = new Subject<Mock[]>();
+  mocksList$!: Observable<Mock[]>;
   isLoading: boolean = false;
   searchResults$?: Observable<Mock[]>;
 
@@ -44,25 +45,30 @@ export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('fileInput') fileInput: any;
   selectedFile: Blob = new Blob();
 
+  private unsubscribeAll$ = new Subject<any>();
+
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
   }
 
   constructor(private mockService: MockService, private toast: ToastrService, private sanitizer: DomSanitizer, private renderer: Renderer2) {
-    this.dataSource = new MatTableDataSource<Mock>(this.mocks);
+
   }
 
   ngOnInit(): void {
-    this.initializeMocks(this.pageIndex, this.pageSize);
+    this.getMocks(this.pageIndex, this.pageSize);
+    this.mocks$.subscribe(mocks=> {
+      this.dataSource = new MatTableDataSource<Mock>(mocks)
+      
+    });
   }
 
   handlePageEvent(e: PageEvent) {
-    console.log(e);
+    
     this.pageEvent = e;
     this.length = e.length;
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
-    this.initializeMocks(this.pageIndex, this.pageSize);
+    this.getMocks(this.pageIndex, this.pageSize);
   }
 
   setPageSizeOptions(setPageSizeOptionsInput: string) {
@@ -72,32 +78,22 @@ export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
 
-  initializeMocks(pageNo?: number, pageSize?: number) {
+  getMocks(pageNo?: number, pageSize?: number) {
     this.isLoading = true;
-    this.mockService.getMocks(pageNo, pageSize).subscribe((response: MockResponse) => {
-      this.mocks = response.data.content;
-      this.dataSource = new MatTableDataSource<Mock>(this.mocks);
-      this.length = response.data.totalElements;
-      this.isLoading = false;
-    });
-  }
-
-  setMockList(mocks: Mock[]) {
-    this.mocks = mocks;
-    this.dataSource = new MatTableDataSource<Mock>(this.mocks);
-    this.length = mocks.length;
-    this.isLoading = false;
-  }
-
-  setSearchResults(mocks: Observable<Mock[]>) {
-    mocks.subscribe(data => this.setMockList(data));
+    this.mockService.getMocks(pageNo, pageSize).subscribe(
+      (mockResponse: MockResponse) => {
+        this.mocks$.next(mockResponse.data.content);
+        this.length = mockResponse.data.totalElements;
+        this.isLoading = false;
+      }
+    );
   }
 
   deleteMock(id: number) {
     this.mockService.deleteMockById(id).subscribe(
       (response) => {
         this.toast.success("Mock deleted.", "Success");
-        this.initializeMocks()
+        this.getMocks()
       },
       (error) => { }
     );
@@ -106,7 +102,6 @@ export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
   onExport() {
     this.mockService.exportAllMocks().subscribe(
       (response: HttpResponse<any>) => {
-        console.log(response);
         const file = new Blob([response.body], { type: 'application/octet-stream' });
 
         const fileUrl = URL.createObjectURL(file);
@@ -124,7 +119,6 @@ export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
         link.setAttribute('download', fileName);
         link.click();
         link.remove();
-        console.log(fileUrl);
         this.toast.success("Mocks exported", "Success");
       }
     );
@@ -146,16 +140,17 @@ export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.mockService.importMocks(formData).subscribe(
       (response: MockResponse) => {
+        this.getMocks();
         this.toast.success(response.message, 'Success');
       },
       (error) => {
-        console.log(error);
+        console.error(error);
         this.toast.error(error.error.message, 'Error');
       }
     );
   }
 
   ngOnDestroy(): void {
-
+    this.unsubscribeAll$.unsubscribe();
   }
 }

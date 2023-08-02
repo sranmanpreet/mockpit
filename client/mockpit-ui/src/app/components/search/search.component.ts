@@ -9,46 +9,42 @@ import { MockService } from 'src/app/services/mock.service';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
 })
-export class SearchComponent implements OnInit, OnDestroy{
-
-  @Input() hideSearchResults:boolean = false;
-  @Output() mocksSearched = new EventEmitter<Observable<Mock[]>>();
+export class SearchComponent implements OnInit, OnDestroy {
 
   withRefresh = false;
   mocks$!: Observable<Mock[]>;
-  private searchText$ = new Subject<string>();
 
+  private searchText$ = new Subject<string>();
   private unsubscribeAll$ = new Subject<any>();
 
-  constructor(private mockService: MockService, private router: Router){
+  constructor(private mockService: MockService, private router: Router) {
 
   }
-  
+
 
   ngOnInit() {
     this.mocks$ = this.searchText$.pipe(takeUntil(this.unsubscribeAll$),
       debounceTime(500),
       distinctUntilChanged(),
       switchMap(query =>
-        this.mockService.search(query).pipe(map(mockResponse=> mockResponse.data.content)))
+        this.mockService.search(query).pipe(map(mockResponse => mockResponse.data.content)))
     );
-    
+
   }
 
   search(query: string) {
-      this.searchText$.next(query);
-      this.mocksSearched.emit(this.mocks$);
+    this.searchText$.next(query);
   }
 
   getValue(event: Event): string {
     return (event.target as HTMLInputElement).value;
   }
 
-  onClickOnSearchResult(id: number){
-    this.router.navigate(['/mock/'+id]);
+  onClickOnSearchResult(id: number) {
+    this.router.navigate(['/mock/' + id]);
   }
 
   ngOnDestroy(): void {
-    this.unsubscribeAll$.unsubscribe();  
+    this.unsubscribeAll$.unsubscribe();
   }
 }

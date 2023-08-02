@@ -2,23 +2,21 @@
   <div class="sm:-mx-6 lg:-mx-8">
     <div class="inline-block min-w-full py-2 sm:px-3 lg:px-8">
       <div>
-        <div class="flex space-x-4 justify-between my-4">
-          <mockpit-search class="basis-2/3" (mocksSearched)="setSearchResults($event)" [hideSearchResults]="true"></mockpit-search>
+        <div class="flex items-center space-x-4 justify-center my-4">
+          <mockpit-search class="basis-2/3" *ngIf="dataSource?.data?.length>0"></mockpit-search>
           <div class="space-x-4">
-            <!-- Add a hidden input element to handle file selection -->
             <input type="file" #fileInput class="hidden" (change)="onFileSelected($event)" accept=".json"
               capture="user" />
   
-            <!-- Button to trigger file selection -->
             <button class="h-min" (click)="fileInput.click()">Import</button>
   
   
-            <button class="h-min" (click)="onExport()">Export</button>
+            <button class="h-min" (click)="onExport()" *ngIf="dataSource?.data?.length>0">Export</button>
 
           </div>
         </div>
-        <div class="mat-elevation-z8" *ngIf="mocks && mocks.length">
-          <table mat-table [dataSource]="dataSource" class="min-w-full text-left text-sm font-light">
+        <div class="mat-elevation-z8" *ngIf="(mocks$ | async); else loading">
+          <table mat-table [dataSource]="dataSource" class="min-w-full text-left text-sm font-light" *ngIf="dataSource.data.length>0">
 
             <!-- Position Column -->
             <ng-container matColumnDef="name">
@@ -61,16 +59,19 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
 
-          <mat-paginator (page)="handlePageEvent($event)" [length]="length" [pageSize]="pageSize" [disabled]="disabled"
+          <mat-paginator *ngIf="dataSource.data.length>0" (page)="handlePageEvent($event)" [length]="length" [pageSize]="pageSize" [disabled]="disabled"
             [showFirstLastButtons]="showFirstLastButtons" [pageSizeOptions]="showPageSizeOptions ? pageSizeOptions : []"
             [hidePageSize]="hidePageSize" [pageIndex]="pageIndex" showFirstLastButtons
             aria-label="Select page of periodic elements">
           </mat-paginator>
         </div>
-        <div *ngIf="mocks && !mocks.length && !isLoading" class="w-full h-[70vh] text-center">
+        <div *ngIf="(mocks$ | async)?.length == 0" class="w-full h-[70vh] text-center mt-[10vh]">
           <span class="m-auto text-2xl">Create your first mock by clicking <strong class="block">'New
               Mock'</strong></span>
         </div>
+        <ng-template #loading>
+          <p clas="h-[60vh] w-full leading-[60vh] text-center">Loading...</p>
+        </ng-template>
       </div>
     </div>
   </div>

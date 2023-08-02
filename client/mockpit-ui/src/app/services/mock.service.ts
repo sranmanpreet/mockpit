@@ -14,9 +14,9 @@ export class MockService {
     this.backendUrl = this.configService.getConfig().backendUrl;
   }
   
-  public getMocks(pageNo?: number, pageSize?:number) : Observable<any> {
+  public getMocks(pageNo?: number, pageSize?:number) : Observable<MockResponse> {
     const options = pageNo!=undefined && pageSize!=undefined? { params: new HttpParams().set('page', pageNo).set('size', pageSize) } : {};
-    return this.http.get(this.backendUrl + "/native/api/mocks", options);
+    return this.http.get(this.backendUrl + "/native/api/mocks", options) as Observable<MockResponse>;
   }
 
   public getMockById(id: number | string | null): Observable<any> {

@@ -86,11 +86,10 @@ export class MockDetailComponent implements OnInit {
   onDelete(){
     this.mockService.deleteMockById(this.mock?.id).subscribe(
       (data)=> {
-        console.log(data);
         this.toast.success("Mock deleted.", "Success");
         this.router.navigate(['/manage']);
       },
-      (error)=>console.log(error)
+      (error)=>console.error(error)
     );
   }
 
