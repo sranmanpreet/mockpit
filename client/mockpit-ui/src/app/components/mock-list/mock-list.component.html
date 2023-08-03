@@ -1,10 +1,10 @@
 <div class="flex flex-col mt-[5vh] px-[2vw]">
   <div class="sm:-mx-6 lg:-mx-8">
     <div class="inline-block min-w-full py-2 sm:px-3 lg:px-8">
-      <div>
-        <div class="flex items-center space-x-4 justify-center my-4">
-          <mockpit-search class="basis-2/3" *ngIf="dataSource?.data?.length>0"></mockpit-search>
-          <div class="space-x-4">
+      <div class="m-auto max-w-full lg:max-w-[70vw]">
+        <div class="flex items-center space-x-1 md:space-x-4 justify-center my-4">
+          <mockpit-search class="grow" *ngIf="dataSource?.data?.length>0"></mockpit-search>
+          <div class="space-x-1 md:space-x-4">
             <input type="file" #fileInput class="hidden" (change)="onFileSelected($event)" accept=".json"
               capture="user" />
   
@@ -16,39 +16,42 @@
           </div>
         </div>
         <div class="mat-elevation-z8" *ngIf="(mocks$ | async); else loading">
-          <table mat-table [dataSource]="dataSource" class="min-w-full text-left text-sm font-light" *ngIf="dataSource.data.length>0">
+          <table mat-table [dataSource]="dataSource" class="text-left text-sm font-light" *ngIf="dataSource.data.length>0">
 
             <!-- Position Column -->
             <ng-container matColumnDef="name">
               <th mat-header-cell *matHeaderCellDef> Name </th>
-              <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+              <td mat-cell *matCellDef="let element" routerLink="/mock/{{element.id}}" class="overflow-hidden"> 
+                <h4 routerLink="/mock/{{element.id}}" class="text-lg my-1 cursor-pointer hover:text-blue-800">{{element.name | truncate }}</h4>
+                <p class="text-xs my-1"><span class="font-bold mr-8">{{element.route.method | truncate}}</span><span>
+                  {{element.route.path | truncate}}
+                </span></p>  
+              </td>
             </ng-container>
 
             <!-- Name Column -->
             <ng-container matColumnDef="description">
-              <th mat-header-cell *matHeaderCellDef> Description </th>
-              <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+              <th mat-header-cell *matHeaderCellDef class="hidden"> Description </th>
+              <td mat-cell *matCellDef="let element" class="hidden"> {{element.description}} </td>
             </ng-container>
 
             <!-- Weight Column -->
             <ng-container matColumnDef="method">
-              <th mat-header-cell *matHeaderCellDef> Method </th>
-              <td mat-cell *matCellDef="let element"> {{element.route.method}} </td>
+              <th mat-header-cell *matHeaderCellDef class="hidden"> Method </th>
+              <td mat-cell *matCellDef="let element" class="hidden"> {{element.route.method}} </td>
             </ng-container>
 
             <!-- Symbol Column -->
             <ng-container matColumnDef="path">
-              <th mat-header-cell *matHeaderCellDef> Path </th>
-              <td mat-cell *matCellDef="let element"> {{element.route.path}} </td>
+              <th mat-header-cell *matHeaderCellDef class="hidden"> Path </th>
+              <td mat-cell *matCellDef="let element" class="hidden"> {{element.route.path | truncate}} </td>
             </ng-container>
 
             <!-- Symbol Column -->
             <ng-container matColumnDef="action">
-              <th mat-header-cell *matHeaderCellDef> Actions </th>
+              <th mat-header-cell *matHeaderCellDef></th>
               <td mat-cell *matCellDef="let element">
                 <div class="flex">
-                  <img class="m-auto w-5 h-5 cursor-pointer hover:bg-slate-300" src="./../../../assets/icons/open.svg"
-                    alt="Open Icon" routerLink="/mock/{{element.id}}">
                   <img class="m-auto w-5 h-5 cursor-pointer hover:bg-slate-300" src="./../../../assets/icons/delete.svg"
                     alt="Delete Icon" (click)="deleteMock(element.id)">
                 </div>

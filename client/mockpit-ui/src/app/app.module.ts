@@ -20,6 +20,7 @@ import { ConfigService } from './services/config.service';
 import { ToastrModule } from 'ngx-toastr';
 import { NewMockComponent } from './components/new-mock/new-mock.component';
 import { SearchComponent } from './components/search/search.component';
+import { TruncatePipe } from './pipes/truncate.pipe';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { SearchComponent } from './components/search/search.component';
     MockListComponent,
     MockDetailComponent,
     NewMockComponent,
-    SearchComponent
+    SearchComponent,
+    TruncatePipe
   ],
   imports: [
     BrowserModule,

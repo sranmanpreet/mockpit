@@ -7,7 +7,12 @@
     <ul class="w-full mt-2 bg-white max-h-[30vh] px-1 shadow-md overflow-y-scroll absolute" *ngIf="(mocks$ | async) as mocks">
         <li *ngFor="let mock of mocks">
             <div class="p-1 border-b-2 border-slate-200 hover:bg-zinc-100 cursor-pointer" (click)="onClickOnSearchResult(mock.id)">
-                <p><strong>{{mock.name}}</strong> <span class="mx-3">{{mock.route.method}}</span>{{mock.route.path}}</p>
+                <p><strong>{{mock.name}}</strong> <span class="mx-3 hidden md:inline">{{mock.route.method}}</span><span class="hidden md:inline">{{mock.route.path}}</span></p>
+            </div>
+        </li>
+        <li *ngIf="query && mocks.length == 0">
+            <div class="p-1 border-b-2 border-slate-200">
+                <p>No mocks found.</p>
             </div>
         </li>
     </ul>
