@@ -15,7 +15,7 @@ spring:
             dialect: org.hibernate.dialect.PostgreSQLDialect
    mvc:
       cors:
-         allowed-origins: http://localhost:4200
+         allowed-origins: "*"
          allowed-methods: "*"
          allowed-headers: "*"
 

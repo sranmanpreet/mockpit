@@ -22,6 +22,9 @@ import { NewMockComponent } from './components/new-mock/new-mock.component';
 import { SearchComponent } from './components/search/search.component';
 import { TruncatePipe } from './pipes/truncate.pipe';
 
+export function initializeApp(configService: ConfigService): () => Promise<any> {
+  return () => configService.loadConfig();
+}
 
 @NgModule({
   declarations: [
@@ -52,6 +55,13 @@ import { TruncatePipe } from './pipes/truncate.pipe';
     MatPaginatorModule
   ],
   providers: [
+    ConfigService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeApp,
+      deps: [ConfigService],
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent]
 })

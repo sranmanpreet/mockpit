@@ -8,19 +8,23 @@ import { Observable, of } from 'rxjs';
 export class ConfigService {
 
   private configUrl = 'assets/config/config.json';
-  private config: any = {};
+  private config: any;
 
-  getConfig() : any {
-    return {backendUrl: "http://localhost:8080"}
+  constructor(private http: HttpClient) {}
+
+  loadConfig(): Promise<any> {
+    return this.http
+      .get(this.configUrl)
+      .toPromise()
+      .then((config) => {
+        this.config = config;
+      })
+      .catch((error) => {
+        console.error('Error loading configuration:', error);
+      });
   }
 
-  constructor(private http: HttpClient) {
-    
-  }
-
-  
-
-  getConfigValue(key: string): any {
-    return this.config[key];
+  getConfig(): any {
+    return this.config;
   }
 }
