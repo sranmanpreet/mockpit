@@ -10,6 +10,7 @@ import { Observable, Subject, map, switchMap, takeUntil } from 'rxjs';
 import { Mock, MockResponse } from 'src/app/models/mock/mock.model';
 import { MockService } from 'src/app/services/mock.service';
 import { HttpResponse } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-mock-list',
@@ -50,8 +51,15 @@ export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit() {
   }
 
-  constructor(private mockService: MockService, private toast: ToastrService, private sanitizer: DomSanitizer, private renderer: Renderer2) {
-
+  constructor(private mockService: MockService, private toast: ToastrService, private renderer: Renderer2, private activatedRoute: ActivatedRoute, private router: Router) {
+    this.activatedRoute.queryParams.subscribe(params=>{
+      if(params['pageSize']){
+        this.pageSize = params['pageSize'];
+      }
+      if(params['pageIndex']){
+        this.pageIndex = params['pageIndex'];
+      }
+    })
   }
 
   ngOnInit(): void {
@@ -71,6 +79,12 @@ export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.getMocks(this.pageIndex, this.pageSize);
   }
 
+  setPageInfoInQueryParameters() {
+    const queryParams = { pageSize: this.pageSize, pageIndex: this.pageIndex };
+
+    this.router.navigate(['/manage'], { queryParams: queryParams });
+  }
+
   setPageSizeOptions(setPageSizeOptionsInput: string) {
     if (setPageSizeOptionsInput) {
       this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);
@@ -82,6 +96,7 @@ export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isLoading = true;
     this.mockService.getMocks(pageNo, pageSize).subscribe(
       (mockResponse: MockResponse) => {
+        this.setPageInfoInQueryParameters();
         this.mocks$.next(mockResponse.data.content);
         this.length = mockResponse.data.totalElements;
         this.isLoading = false;

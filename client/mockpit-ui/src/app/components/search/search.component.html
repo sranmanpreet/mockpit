@@ -1,13 +1,18 @@
 <form class="w-full h-fit relative">
     <div class="border rounded-full overflow-hidden shadow-md flex">
         <img class="m-auto ml-4 w-5 h-5" src="./../../../assets/icons/search.svg" alt="Search Icon">
-        <input class="w-full px-4 py-2 outline-none" type="text" placeholder="Search your mocks" title="Search"
-            (keyup)="search(getValue($event))">
+        <input class="w-full px-4 py-2 outline-none" type="text" placeholder="Search mocks" title="Search"
+            (keyup)="search(getValue($event))" [ngModel]="query" name="query">
+        <img class="m-auto mr-4 w-5 h-5 cursor-pointer" src="./../../../assets/icons/close.svg" alt="Search Icon" [ngClass]="query? 'inline' : 'hidden'" (click)="clearSearch()">
     </div>
-    <ul class="w-full mt-2 bg-white max-h-[30vh] px-1 shadow-md overflow-y-scroll absolute" *ngIf="(mocks$ | async) as mocks">
+    <ul class="w-full mt-2 bg-white max-h-[30vh] px-1 shadow-md overflow-y-scroll absolute"
+        *ngIf="(mocks$ | async) as mocks">
         <li *ngFor="let mock of mocks">
-            <div class="p-1 border-b-2 border-slate-200 hover:bg-zinc-100 cursor-pointer" (click)="onClickOnSearchResult(mock.id)">
-                <p><strong>{{mock.name}}</strong> <span class="mx-3 hidden md:inline">{{mock.route.method}}</span><span class="hidden md:inline">{{mock.route.path}}</span></p>
+            <div class="p-1 border-b-2 border-slate-200 hover:bg-zinc-100 cursor-pointer"
+                (click)="onClickOnSearchResult(mock.id)">
+                <h4 class="">{{mock.name | truncate : 50 }}</h4>
+                <p class="text-xs text-neutral-400"><span class="hidden md:inline">{{mock.route.method}}</span><span
+                        class="hidden md:inline ml-4">{{mock.route.path | truncate: 50 }}</span></p>
             </div>
         </li>
         <li *ngIf="query && mocks.length == 0">

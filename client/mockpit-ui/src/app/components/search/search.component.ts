@@ -42,6 +42,10 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.searchText$.next(query);
   }
 
+  clearSearch(){
+    this.searchText$.next("");
+  }
+
   getValue(event: Event): string {
     return (event.target as HTMLInputElement).value;
   }
