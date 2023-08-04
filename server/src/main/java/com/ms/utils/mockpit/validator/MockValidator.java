@@ -28,6 +28,9 @@ public class MockValidator {
         if(Objects.isNull(responseBodyDTO)){
             throw new MockpitApplicationException("Response body not provided.");
         }
+        if(Objects.isNull(responseBodyDTO.getContentType()) || responseBodyDTO.getContentType().isEmpty()){
+            throw new MockpitApplicationException("Response body content type not provided.");
+        }
         return true;
     }
 
@@ -43,14 +46,20 @@ public class MockValidator {
     }
 
     private boolean isRouteValid(RouteDTO routeDTO) throws MockpitApplicationException {
-        if(Objects.isNull(routeDTO) || Objects.isNull(routeDTO.getMethod()) || Objects.isNull(routeDTO.getPath())){
+        if(Objects.isNull(routeDTO) || Objects.isNull(routeDTO.getPath())){
             throw new MockpitApplicationException("Route details not provided.");
+        }
+        if(Objects.isNull(routeDTO.getMethod()) || routeDTO.getMethod().toString().isEmpty()){
+            throw new MockpitApplicationException("Method method not provided.");
+        }
+        if(Objects.isNull(routeDTO.getMethod()) || routeDTO.getPath().isEmpty()){
+            throw new MockpitApplicationException("Route not provided.");
         }
         return true;
     }
 
     private boolean isResponseStatusValid(ResponseStatusDTO responseStatusDTO) throws MockpitApplicationException {
-        if(Objects.isNull(responseStatusDTO) || Objects.isNull(responseStatusDTO.getCode())){
+        if(Objects.isNull(responseStatusDTO) || Objects.isNull(responseStatusDTO.getCode()) ){
             throw new MockpitApplicationException("Response status code not provided.");
         }
         return true;

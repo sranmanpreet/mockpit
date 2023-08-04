@@ -68,7 +68,8 @@ public class MockService {
         return null;
     }
 
-    public MockDTO updateMock(MockDTO mockDTO) throws MockNotFoundException {
+    public MockDTO updateMock(MockDTO mockDTO) throws MockNotFoundException, MockpitApplicationException {
+        mockValidator.isMockValid(mockDTO);
         Mock existingMock = mockRepository.findById(mockDTO.getId())
                 .orElseThrow(() -> new MockNotFoundException("Mock not found"));
 

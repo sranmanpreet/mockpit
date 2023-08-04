@@ -30,7 +30,8 @@ public class LiveResource {
     public ResponseEntity<Object> handleLiveRequests(HttpServletRequest request, HttpServletResponse response) {
         LOGGER.info("Request received by  LiveResource...");
         LOGGER.info(request.getRequestURI() + " " + request.getMethod());
-        LiveResponseDTO liveResponse = liveResponseService.getLiveResponse(request.getRequestURI(), request.getMethod());
+
+        LiveResponseDTO liveResponse = liveResponseService.getLiveResponse(request, request.getMethod());
         if(Objects.isNull(liveResponse)){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Oops! Resource not found.");
         }
