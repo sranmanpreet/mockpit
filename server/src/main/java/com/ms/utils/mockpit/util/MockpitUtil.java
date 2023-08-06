@@ -29,7 +29,7 @@ public class MockpitUtil {
         configuredUrl = removeTrailingSlashes(removeQueryParameters(configuredUrl));
         Map<String, String> pathVariablesMap = new HashMap<>();
 
-        int i=0,j=0, x=0, y=0, n=configuredUrl.length()-1;
+        int i=0,j=0, x=0, y=0, n=configuredUrl.length()-1, m=incomingUrl.length()-1;
 
         while(i<=n && j<=n && i<=j){
             if(configuredUrl.charAt(j) == incomingUrl.charAt(y)){
@@ -40,11 +40,11 @@ public class MockpitUtil {
             if(configuredUrl.charAt(j)==':'){
                 j++;
                 i = j;
-                while(configuredUrl.charAt(j)!='/'){
+                while(j<=n && configuredUrl.charAt(j)!='/'){
                     j++;
                 }
                 x=y;
-                while(incomingUrl.charAt(y)!='/'){
+                while(y<=m && incomingUrl.charAt(y)!='/'){
                     y++;
                 }
                 pathVariablesMap.put(configuredUrl.substring(i,j), incomingUrl.substring(x,y));

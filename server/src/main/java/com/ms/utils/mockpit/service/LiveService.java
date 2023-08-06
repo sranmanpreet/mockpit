@@ -40,13 +40,19 @@ public class LiveService {
                 return null;
             }
         }
-        executeDynamicResponseBody(mockDto, request.getParameterMap());
+        executeDynamicResponseBody(
+                mockDto,
+                request.getParameterMap(),
+                MockpitUtil.getPathVariableMap(route, mockDto.getRoute().getPath())
+        );
         return mockDtoToLiveResponseMapper.toLiveResponseDTO(mockDto);
     }
 
-    private void executeDynamicResponseBody(MockDTO mockDTO, Map<String, String[]> queryParams){
+    private void executeDynamicResponseBody(MockDTO mockDTO, Map<String, String[]> queryParams, Map<String,String> pathVariables){
         if(mockDTO.getResponseBody().getType().equalsIgnoreCase("JAVASCRIPT")){
-            mockDTO.getResponseBody().setContent(jsExecutionService.execute(mockDTO.getResponseBody().getContent(), queryParams));
+            mockDTO.getResponseBody().setContent(jsExecutionService
+                    .execute(mockDTO.getResponseBody().getContent(), queryParams, pathVariables)
+            );
         }
     }
 
