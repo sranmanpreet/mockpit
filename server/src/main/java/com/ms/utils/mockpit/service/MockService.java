@@ -116,6 +116,14 @@ public class MockService {
         return mockMapper.toDto(mocks.get(mocks.size()-1));
     }
 
+    public List<MockDTO> getMocksByMethod(String method) {
+        List<Mock> mocks = mockRepository.findByMethod(method);
+        if(Objects.isNull(mocks) || mocks.isEmpty()){
+            return null;
+        }
+        return mockMapper.toDTOList(mocks);
+    }
+
     public void deleteMockById(Long id) throws MockNotFoundException {
         Optional<Mock> existingMock = mockRepository.findById(id);
         if(!existingMock.isPresent()){

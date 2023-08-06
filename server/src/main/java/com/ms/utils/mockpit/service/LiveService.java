@@ -1,9 +1,11 @@
 package com.ms.utils.mockpit.service;
 
 import com.ms.utils.mockpit.aop.exception.MockNotFoundException;
+import com.ms.utils.mockpit.domain.Mock;
 import com.ms.utils.mockpit.dto.LiveResponseDTO;
 import com.ms.utils.mockpit.dto.MockDTO;
 import com.ms.utils.mockpit.mapper.MockDTOLiveResponseDTOMapper;
+import com.ms.utils.mockpit.util.MockpitUtil;
 import com.ms.utils.mockpit.web.LiveResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -32,7 +35,10 @@ public class LiveService {
         String route = request.getRequestURI();
         MockDTO mockDto = mockService.getMockByRouteAndMethod(route, method);
         if(Objects.isNull(mockDto)){
-            return null;
+            mockDto = getMockWithPathVariables(route, method);
+            if(Objects.isNull(mockDto)){
+                return null;
+            }
         }
         executeDynamicResponseBody(mockDto, request.getParameterMap());
         return mockDtoToLiveResponseMapper.toLiveResponseDTO(mockDto);
@@ -42,5 +48,18 @@ public class LiveService {
         if(mockDTO.getResponseBody().getType().equalsIgnoreCase("JAVASCRIPT")){
             mockDTO.getResponseBody().setContent(jsExecutionService.execute(mockDTO.getResponseBody().getContent(), queryParams));
         }
+    }
+
+    private MockDTO getMockWithPathVariables(String route, String method){
+        List<MockDTO> mocks = mockService.getMocksByMethod(method);
+        if(Objects.isNull(mocks) || mocks.isEmpty()){
+            return null;
+        }
+        for (MockDTO m: mocks){
+            if(MockpitUtil.isMatch(route, m.getRoute().getPath())){
+                return m;
+            }
+        }
+        return null;
     }
 }

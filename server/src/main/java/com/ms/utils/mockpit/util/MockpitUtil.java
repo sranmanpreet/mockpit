@@ -7,12 +7,11 @@ import java.util.regex.Pattern;
 
 public class MockpitUtil {
 
-    public static boolean doUrlsMatch(String incomingUrl, String configuredUrl) {
+    public static boolean isMatch(String incomingUrl, String configuredUrl) {
 
-        String regex = configuredUrl.replaceAll(":(\\w+)", "(\\\\w+)");
-
+        String regex = removeTrailingSlashes(removeQueryParameters(configuredUrl)).replaceAll(":([\\w-]+)", "([\\\\w-]+)");
         Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(removeQueryParameters(incomingUrl));
+        Matcher matcher = pattern.matcher(removeTrailingSlashes(removeQueryParameters(incomingUrl)));
 
         return matcher.matches();
     }
@@ -25,15 +24,40 @@ public class MockpitUtil {
         return matcher.replaceAll("");
     }
 
-    public static String patternMatcher(String url) {
-        String pattern = "/:(\\w+)";
-        Pattern regexPattern = Pattern.compile(pattern);
-        Matcher matcher = regexPattern.matcher(url);
+    public static Map<String, String> getPathVariableMap(String incomingUrl, String configuredUrl) {
+        incomingUrl = removeTrailingSlashes(removeQueryParameters(incomingUrl));
+        configuredUrl = removeTrailingSlashes(removeQueryParameters(configuredUrl));
+        Map<String, String> pathVariablesMap = new HashMap<>();
 
-        while (matcher.find()) {
-            String pathVariable = matcher.group(1);
-            System.out.println("Path Variable: " + pathVariable);
+        int i=0,j=0, x=0, y=0, n=configuredUrl.length()-1;
+
+        while(i<=n && j<=n && i<=j){
+            if(configuredUrl.charAt(j) == incomingUrl.charAt(y)){
+                j++;
+                y++;
+                continue;
+            }
+            if(configuredUrl.charAt(j)==':'){
+                j++;
+                i = j;
+                while(configuredUrl.charAt(j)!='/'){
+                    j++;
+                }
+                x=y;
+                while(incomingUrl.charAt(y)!='/'){
+                    y++;
+                }
+                pathVariablesMap.put(configuredUrl.substring(i,j), incomingUrl.substring(x,y));
+            } else {
+                j++;
+                y++;
+            }
         }
-        return "";
+        return pathVariablesMap;
+    }
+
+    private static String removeTrailingSlashes(String url) {
+        String regex = "/+$";
+        return url.replaceAll(regex, "");
     }
 }
