@@ -24,7 +24,7 @@ interface Route {
   method: "GET" | "PUT" | "POST" | "PATCH" | "DELETE" | "OPTIONS"
 }
 
-interface ResponseHeader {
+export interface ResponseHeader {
   name: string,
   value: string
 }

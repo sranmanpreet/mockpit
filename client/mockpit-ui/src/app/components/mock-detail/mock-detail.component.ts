@@ -4,7 +4,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router'
 
 import { ToastrService } from 'ngx-toastr';
 
-import { Mock, MockResponse } from 'src/app/models/mock/mock.model';
+import { Mock, MockResponse, ResponseHeader } from 'src/app/models/mock/mock.model';
 import { MockService } from 'src/app/services/mock.service';
 
 @Component({
@@ -55,10 +55,10 @@ export class MockDetailComponent implements OnInit {
         'path': new FormControl(mock?.route.path),
         'method': new FormControl(mock?.route.method)
       }),
-      'responseHeaders': new FormArray(new Array()),
+      'responseHeaders': new FormArray([]),
       'responseBody': new FormGroup({
         'type': new FormControl(mock?.responseBody.type),
-        'content': new FormControl(JSON.stringify( mock?.responseBody.content)),
+        'content': new FormControl(mock?.responseBody.content),
         'contentType': new FormControl(mock?.responseBody.contentType)
       }),
       'responseStatus': new FormGroup({
@@ -66,6 +66,9 @@ export class MockDetailComponent implements OnInit {
       }),
       'active': new FormControl(mock?.active)
     });
+    this.initializeResponseHeaderContorls(this.mock?.responseHeaders);
+
+    console.log(this.mockForm);
   }
 
   onSubmit() {
@@ -77,6 +80,10 @@ export class MockDetailComponent implements OnInit {
       (error)=>{
         this.toast.error(error.error.message, "Error");
       });
+  }
+
+  getResponseHeaderControls() {
+    return (this.mockForm.get('responseHeaders') as FormArray).controls;
   }
 
   onCancel(){
@@ -95,5 +102,25 @@ export class MockDetailComponent implements OnInit {
 
   onTest(){
     this.router.navigateByUrl(this.mockService.backendUrl + this.mock?.route.path);
+  }
+
+  addHeader(name?: string, value?: string) {
+    (this.mockForm.get('responseHeaders') as FormArray).push(this.createHeader(name, value));
+  }
+
+  removeHeader(index: number) {
+    const details = this.mockForm.get('responseHeaders') as FormArray;
+    details.removeAt(index);
+  }
+
+  createHeader(name?: string, value?: string): FormGroup {
+    return new FormGroup({
+      name: new FormControl(name),
+      value: new FormControl(value) 
+    });
+  }
+
+  initializeResponseHeaderContorls(responseHeaders?: Array<ResponseHeader>){
+    responseHeaders?.forEach(responseHeader => this.addHeader(responseHeader.name, responseHeader.value));
   }
 }

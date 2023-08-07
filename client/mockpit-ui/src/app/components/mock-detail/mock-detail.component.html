@@ -1,4 +1,4 @@
- <div class="mx-auto my-6 w-[90%] md:w-[80%] lg:w-[60%]">
+<div class="mx-auto my-6 w-[90%] md:w-[80%] lg:w-[60%]">
     <form [formGroup]="mockForm" *ngIf="mockForm" (ngSubmit)="onSubmit()">
         <div class="grid gap-6 mb-6 grid-cols-1">
             <div class="flex flex-col lg:flex-row lg:space-x-6">
@@ -30,7 +30,8 @@
                     <label for="method"
                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Method</label>
                     <select id="method"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" formControlName="method">
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        formControlName="method">
                         <option selected>GET</option>
                         <option value="POST">POST</option>
                         <option value="PUT">PUT</option>
@@ -89,6 +90,25 @@
                         class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="[{'title' : 'Buy Grocery'}, {'title': 'Pay Electricity Bill'},{'title': 'Mow Lawn'}]"
                         formControlName="content"></textarea>
+                </div>
+            </div>
+            <div class="mb-6" formArrayName="responseHeaders">
+                <div class="flex justify-self-end space-x-2" >
+                    <label for="response-headers"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Response
+                        Headers</label>
+                    <img src="../../../assets/icons/add.svg" alt="Add Response Header" class="w-5 h-5 cursor-pointer hover:bg-gray-100" (click)="addHeader()">
+                </div>
+                <div class="w-full space-y-2">
+                    <div class="flex space-x-2 items-center" *ngFor="let header of getResponseHeaderControls(); let i = index" [formGroupName]="i">
+                        <input type="text" id="response-header-1"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Name {{ i + 1 }}" formControlName="name">
+                        <input type="text" id="response-header-1"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Value {{ i + 1 }}" formControlName="value">
+                        <img src="../../../assets/icons/delete.svg" alt="Delete Header" class="h-5 w-5 cursor-pointer hover:bg-gray-100" (click)="removeHeader(i)">
+                    </div>
                 </div>
             </div>
         </div>
