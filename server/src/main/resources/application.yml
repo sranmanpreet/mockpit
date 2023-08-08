@@ -18,7 +18,9 @@ spring:
          allowed-origins: "*"
          allowed-methods: "*"
          allowed-headers: "*"
-
+      static-path-pattern: /**
+   resources:
+      static-locations: classpath:/static/
 
 server:
    port: 8080

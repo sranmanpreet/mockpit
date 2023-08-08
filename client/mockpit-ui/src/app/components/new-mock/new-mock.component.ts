@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Mock, MockResponse } from 'src/app/models/mock/mock.model';
+import { Mock, MockResponse, ResponseHeader } from 'src/app/models/mock/mock.model';
 import { MockService } from 'src/app/services/mock.service';
 
 @Component({
@@ -60,5 +60,29 @@ export class NewMockComponent implements OnInit {
 
   onCancel() {
     this.initializeForm(undefined);
+  }
+
+  getResponseHeaderControls() {
+    return (this.mockForm.get('responseHeaders') as FormArray).controls;
+  }
+
+  addHeader(name?: string, value?: string) {
+    (this.mockForm.get('responseHeaders') as FormArray).push(this.createHeader(name, value));
+  }
+
+  removeHeader(index: number) {
+    const details = this.mockForm.get('responseHeaders') as FormArray;
+    details.removeAt(index);
+  }
+
+  createHeader(name?: string, value?: string): FormGroup {
+    return new FormGroup({
+      name: new FormControl(name),
+      value: new FormControl(value) 
+    });
+  }
+
+  initializeResponseHeaderContorls(responseHeaders?: Array<ResponseHeader>){
+    responseHeaders?.forEach(responseHeader => this.addHeader(responseHeader.name, responseHeader.value));
   }
 }

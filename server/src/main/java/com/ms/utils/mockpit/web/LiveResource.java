@@ -1,5 +1,6 @@
 package com.ms.utils.mockpit.web;
 
+import com.ms.utils.mockpit.aop.exception.MockNotFoundException;
 import com.ms.utils.mockpit.aop.interceptor.LogExecutionTime;
 import com.ms.utils.mockpit.dto.LiveResponseDTO;
 import com.ms.utils.mockpit.service.LiveService;
@@ -27,13 +28,13 @@ public class LiveResource {
 
     @LogExecutionTime
     @RequestMapping("/**")
-    public ResponseEntity<Object> handleLiveRequests(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<Object> handleLiveRequests(HttpServletRequest request, HttpServletResponse response) throws MockNotFoundException {
         LOGGER.info("Request received by  LiveResource...");
         LOGGER.info(request.getRequestURI() + " " + request.getMethod());
 
         LiveResponseDTO liveResponse = liveResponseService.getLiveResponse(request, request.getMethod());
         if(Objects.isNull(liveResponse)){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Oops! Resource not found.");
+            throw new MockNotFoundException("Resource not found");
         }
         liveResponse.getHeaders().forEach(header -> response.addHeader(header.getName(), header.getValue()));
 

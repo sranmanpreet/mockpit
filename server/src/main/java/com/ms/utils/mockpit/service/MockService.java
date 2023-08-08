@@ -6,6 +6,7 @@ import com.ms.utils.mockpit.domain.*;
 import com.ms.utils.mockpit.dto.ExportMockDTO;
 import com.ms.utils.mockpit.dto.MockDTO;
 import com.ms.utils.mockpit.dto.ResponseHeaderDTO;
+import com.ms.utils.mockpit.dto.RouteDTO;
 import com.ms.utils.mockpit.mapper.*;
 import com.ms.utils.mockpit.repository.*;
 import com.ms.utils.mockpit.validator.MockValidator;
@@ -58,7 +59,11 @@ public class MockService {
             Mock mock = new Mock(mockDTO.getName(), mockDTO.getDescription());
 
             mock.setResponseBody(responseBodyMapper.toEntity(mockDTO.getResponseBody()));
-            mock.setRoute(routeMapper.toEntity(mockDTO.getRoute()));
+            RouteDTO route = mockDTO.getRoute();
+            if(!route.getPath().startsWith("/")){
+                route.setPath("/"+route.getPath());
+            }
+            mock.setRoute(routeMapper.toEntity(route));
             mock.setResponseStatus(responseStatusMapper.toEntity(mockDTO.getResponseStatus()));
             mock.setResponseHeaders(responseHeaderMapper.toEntityList(mockDTO.getResponseHeaders()));
             mock = mockRepository.save(mock);
@@ -76,6 +81,11 @@ public class MockService {
         // Update fields of the existing mock
         existingMock.setName(mockDTO.getName());
         existingMock.setDescription(mockDTO.getDescription());
+        RouteDTO route = mockDTO.getRoute();
+        if(!route.getPath().startsWith("/")){
+            route.setPath("/"+route.getPath());
+        }
+        existingMock.setRoute(routeMapper.toEntity(route));
         existingMock.setRoute(routeMapper.toEntity(mockDTO.getRoute()));
         existingMock.setResponseBody(responseBodyMapper.toEntity(mockDTO.getResponseBody()));
         existingMock.setResponseStatus(responseStatusMapper.toEntity(mockDTO.getResponseStatus()));

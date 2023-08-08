@@ -22,7 +22,7 @@
             <ng-container matColumnDef="name">
               <th mat-header-cell *matHeaderCellDef> </th>
               <td mat-cell *matCellDef="let element" routerLink="/mock/{{element.id}}" class="overflow-hidden cursor-pointer hover:text-blue-800"> 
-                <h4 routerLink="/mock/{{element.id}}" class="text-lg my-1 ">{{element.name | truncate }}</h4>
+                <h4 routerLink="/mock/{{element.id}}" class="text-lg my-1 ">{{element.name | truncate : 50}}</h4>
                 <p class="text-xs my-1"><span class="font-bold mr-8">{{element.route.method | truncate}}</span><span>
                   {{element.route.path | truncate}}
                 </span></p>  

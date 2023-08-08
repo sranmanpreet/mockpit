@@ -21,6 +21,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { NewMockComponent } from './components/new-mock/new-mock.component';
 import { SearchComponent } from './components/search/search.component';
 import { TruncatePipe } from './pipes/truncate.pipe';
+import { FooterComponent } from './components/footer/footer.component';
 
 export function initializeApp(configService: ConfigService): () => Promise<any> {
   return () => configService.loadConfig();
@@ -36,7 +37,8 @@ export function initializeApp(configService: ConfigService): () => Promise<any> 
     MockDetailComponent,
     NewMockComponent,
     SearchComponent,
-    TruncatePipe
+    TruncatePipe,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
