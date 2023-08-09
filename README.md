@@ -7,8 +7,8 @@ Mockpit is a versatile and user-friendly REST API mock server that empowers deve
 - **Dynamic Response Generation**: Use JavaScript in ResponseBody evaluation to create dynamic response bodies based on path variables and query parameters.
 - **Path Variables and Query Parameters**: Mockpit automatically extracts path variables and query parameters from the request URL and makes them available for dynamic response generation.
 - **Custom Response Headers**: Configure response headers for your mock APIs, allowing you to simulate various scenarios.
-- **Search**: Easily find your mocks using paginated search support
-- **Export and Import**: Use it to backup your mocks, migrate to another instance, share with others
+- **Mock Search**: Quickly locate your mock configurations using Mockpit's search functionality. This feature ensures that you can easily find and work with the mocks you need.
+- **Export and Import Mocks**: Seamlessly export and import mock configurations to and from Mockpit. Share your mock setups with colleagues and collaborators to ensure consistency across your team's development efforts.
 - **Easy-to-Use Configuration**: Mockpit's intuitive user interface lets you create, edit, and manage mock APIs effortlessly.
 - **Fast and Lightweight**: Mockpit is designed to be fast and lightweight, ensuring minimal impact on your development workflow.
 
@@ -73,7 +73,8 @@ Here's a quick example of creating a mock API in Mockpit:
 ![Dynamic Mock](https://github.com/sranmanpreet/mockpit/blob/master/documentation/assets/new-mock-dynamic.png?raw=true)
 4. Save the mock and start using it in your application.
 ![Dynamic Mock Response](https://github.com/sranmanpreet/mockpit/blob/master/documentation/assets/new-mock-dynamic-response.png?raw=true)
-
+5. Manage mocks
+![Manage Mocks](https://github.com/sranmanpreet/mockpit/blob/master/documentation/assets/manage-mocks.png?raw=true)
 ### Collaboration
 Mockpit welcomes collaboration from developers like you! If you'd like to contribute to the project, feel free to open an issue, submit a pull request, or provide feedback.
 
