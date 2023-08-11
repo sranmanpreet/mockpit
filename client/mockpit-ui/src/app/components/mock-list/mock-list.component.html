@@ -7,25 +7,27 @@
           <div class="space-x-1 md:space-x-4">
             <input type="file" #fileInput class="hidden" (change)="onFileSelected($event)" accept=".json"
               capture="user" />
-  
-            <button class="h-min" (click)="fileInput.click()">Import</button>
-  
-  
+
+            <button class="h-min" (click)="fileInput.click()" *ngIf="(mocks$ | async)">Import</button>
+
+
             <button class="h-min" (click)="onExport()" *ngIf="dataSource?.data?.length>0">Export</button>
 
           </div>
         </div>
-        <div class="mat-elevation-z8" *ngIf="(mocks$ | async); else loading">
-          <table mat-table [dataSource]="dataSource" class="text-left text-sm font-light" *ngIf="dataSource.data.length>0">
+        <div class="mat-elevation-z8" [ngClass]="(mocks$ | async)? '' : 'shadow-none'" *ngIf="(mocks$ | async); else loading">
+          <table mat-table [dataSource]="dataSource" class="text-left text-sm font-light"
+            *ngIf="dataSource.data.length>0">
 
             <!-- Position Column -->
             <ng-container matColumnDef="name">
-              <th mat-header-cell *matHeaderCellDef> </th>
-              <td mat-cell *matCellDef="let element" routerLink="/mock/{{element.id}}" class="overflow-hidden cursor-pointer hover:text-blue-800"> 
+              <th mat-header-cell *matHeaderCellDef class="font-bold">Mocks</th>
+              <td mat-cell *matCellDef="let element" routerLink="/mock/{{element.id}}"
+                class="overflow-hidden cursor-pointer hover:text-blue-800">
                 <h4 routerLink="/mock/{{element.id}}" class="text-lg my-1 ">{{element.name | truncate : 50}}</h4>
                 <p class="text-xs my-1"><span class="font-bold mr-8">{{element.route.method | truncate}}</span><span>
-                  {{element.route.path | truncate}}
-                </span></p>  
+                    {{element.route.path | truncate}}
+                  </span></p>
               </td>
             </ng-container>
 
@@ -62,18 +64,21 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
 
-          <mat-paginator *ngIf="dataSource.data.length>0" (page)="handlePageEvent($event)" [length]="length" [pageSize]="pageSize" [disabled]="disabled"
-            [showFirstLastButtons]="showFirstLastButtons" [pageSizeOptions]="showPageSizeOptions ? pageSizeOptions : []"
-            [hidePageSize]="hidePageSize" [pageIndex]="pageIndex" showFirstLastButtons
-            aria-label="Select page of periodic elements">
+          <mat-paginator *ngIf="dataSource.data.length>0" (page)="handlePageEvent($event)" [length]="length"
+            [pageSize]="pageSize" [disabled]="disabled" [showFirstLastButtons]="showFirstLastButtons"
+            [pageSizeOptions]="showPageSizeOptions ? pageSizeOptions : []" [hidePageSize]="hidePageSize"
+            [pageIndex]="pageIndex" showFirstLastButtons aria-label="Select page of periodic elements">
           </mat-paginator>
         </div>
         <div *ngIf="(mocks$ | async)?.length == 0" class="w-full h-[70vh] text-center mt-[10vh]">
+          <span class="block mb-8">Or</span>
+          <br>
           <span class="m-auto text-2xl">Create your first mock by clicking <strong class="block">'New
-              Mock'</strong></span>
+              Mock'</strong></span> <br>
+
         </div>
         <ng-template #loading>
-          <p clas="h-[60vh] w-full leading-[60vh] text-center">Loading...</p>
+          <p clas="h-[60vh] w-[80vw] leading-[60vh] text-center"><span class="m-auto">Loading...</span></p>
         </ng-template>
       </div>
     </div>

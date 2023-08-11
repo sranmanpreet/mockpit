@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.ms.utils</groupId>
 	<artifactId>mockpit</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-RELEASE</version>
 	<name>mockpit-service</name>
 	<description>A REST mock server </description>
 	<properties>

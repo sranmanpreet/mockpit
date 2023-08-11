@@ -52,11 +52,11 @@ export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   constructor(private mockService: MockService, private toast: ToastrService, private renderer: Renderer2, private activatedRoute: ActivatedRoute, private router: Router) {
-    this.activatedRoute.queryParams.subscribe(params=>{
-      if(params['pageSize']){
+    this.activatedRoute.queryParams.subscribe(params => {
+      if (params['pageSize']) {
         this.pageSize = params['pageSize'];
       }
-      if(params['pageIndex']){
+      if (params['pageIndex']) {
         this.pageIndex = params['pageIndex'];
       }
     })
@@ -64,14 +64,14 @@ export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
     this.getMocks(this.pageIndex, this.pageSize);
-    this.mocks$.subscribe(mocks=> {
+    this.mocks$.subscribe(mocks => {
       this.dataSource = new MatTableDataSource<Mock>(mocks)
-      
+
     });
   }
 
   handlePageEvent(e: PageEvent) {
-    
+
     this.pageEvent = e;
     this.length = e.length;
     this.pageSize = e.pageSize;
