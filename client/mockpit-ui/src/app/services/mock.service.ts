@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { ConfigService } from './config.service';
+import { environment } from 'src/environments/environment';
 import { Mock, MockResponse } from '../models/mock/mock.model';
 
 @Injectable({
@@ -10,8 +10,8 @@ import { Mock, MockResponse } from '../models/mock/mock.model';
 export class MockService {
   backendUrl: string = "";
 
-  constructor(private http: HttpClient, private configService: ConfigService){
-    this.backendUrl = this.configService.getConfig().backendUrl;
+  constructor(private http: HttpClient){
+    this.backendUrl = environment.backendUrl;
   }
   
   public getMocks(pageNo?: number, pageSize?:number) : Observable<MockResponse> {

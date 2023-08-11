@@ -8,6 +8,8 @@ import { MatTableModule } from '@angular/material/table';
 
 
 import { AppRoutingModule } from './app-routing.module';
+import { environment as devEnvironment, environment } from '../environments/environment';
+import { environment as prodEnvironment } from '../environments/environment.prod';
 
 
 import { AppComponent } from './app.component';
@@ -16,16 +18,11 @@ import { ShellComponent } from './components/shell/shell.component';
 import { HeaderComponent } from './components/header/header.component';
 import { MockListComponent } from './components/mock-list/mock-list.component';
 import { MockDetailComponent } from './components/mock-detail/mock-detail.component';
-import { ConfigService } from './services/config.service';
 import { ToastrModule } from 'ngx-toastr';
 import { NewMockComponent } from './components/new-mock/new-mock.component';
 import { SearchComponent } from './components/search/search.component';
 import { TruncatePipe } from './pipes/truncate.pipe';
 import { FooterComponent } from './components/footer/footer.component';
-
-export function initializeApp(configService: ConfigService): () => Promise<any> {
-  return () => configService.loadConfig();
-}
 
 @NgModule({
   declarations: [
@@ -56,15 +53,7 @@ export function initializeApp(configService: ConfigService): () => Promise<any> 
     MatTableModule,
     MatPaginatorModule
   ],
-  providers: [
-    ConfigService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeApp,
-      deps: [ConfigService],
-      multi: true,
-    },
-  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

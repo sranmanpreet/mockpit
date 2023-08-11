@@ -1,0 +1,36 @@
+version: '3'
+services:
+  mockpit-server:
+    container_name: mockpit-server
+    image: mockpit-server:0.0.1-SNAPSHOT
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "db"
+    environment:
+      #SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/mockpitdb
+      #SPRING_DATASOURCE_USERNAME: mockpitadmin
+      #SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_APPLICATION_JSON: '{
+              "spring.datasource.url"  : "jdbc:postgresql://db:5432/mockpitdb",
+              "spring.datasource.username" : "mockpitadmin",
+              "spring.datasource.password" : "admin"
+            }'
+
+  mockpit-client:
+    container_name: mockpit-client
+    image: mockpit-client:0.0.1-SNAPSHOT
+    ports:
+      - "4200:80"
+    environment:
+      backendUrl: http://mockpit-server:8080
+
+  db:
+    container_name: db
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: mockpitdb
+      POSTGRES_USER: mockpitadmin
+      POSTGRES_PASSWORD: admin
