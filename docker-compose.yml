@@ -2,7 +2,7 @@ version: '3'
 services:
   mockpit-server:
     container_name: mockpit-server
-    image: mockpit-server:1.0.0-RELEASE
+    image: sranmanpreet/mockpit-server:1.0.0-RELEASE
     ports:
       - "8080:8080"
     depends_on:
@@ -15,7 +15,7 @@ services:
             }'
 
   mockpit-client:
-    image: mockpit-client:1.0.0-RELEASE
+    image: sranmanpreet/mockpit-client:1.0.0-RELEASE
     environment:
       backendUrl: http://localhost:8080
     ports:
