@@ -16,10 +16,7 @@ Mockpit is a versatile and user-friendly REST API mock server that empowers deve
 
 ### Installation
 
-#### Using Docker
-- Coming soon...!!!
-
-
+---
 #### Pre-requisites:
 - Java 11
 - Maven
@@ -54,7 +51,16 @@ Mockpit is a versatile and user-friendly REST API mock server that empowers deve
    npm start 
    ```
    Client will be deployed on http://localhost:4200 by default.
-
+#### Installation using Docker
+- Install Server
+ ```
+docker run -e "SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/moock" -e "SPRING_DATASOURCE_USERNAME=postgres" -e "SPRING_DATASOURCE_PASSWORD=postgres" -p 8080:8080 mockpit-server:1.0.0-RELEASE
+ ```
+- Install Client
+```
+docker run -p 4200:80 -e backendUrl=http://localhost:8080 sranmanpreet/mockpit-server:1.0.0-RELEASE
+```
+Mockpit will be accessible at http://localhost:4200
 
 ### Usage
 1. After installation with default configurations, access the Mockpit web interface by navigating to http://localhost:4200 in your web browser.
