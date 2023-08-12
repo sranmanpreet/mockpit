@@ -4,38 +4,37 @@ services:
     container_name: mockpit-server
     image: mockpit-server:1.0.0-RELEASE
     ports:
-      - "8081:8080"
+      - "8080:8080"
     depends_on:
       - "db"
     environment:
-      #SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/mockpitdb
-      #SPRING_DATASOURCE_USERNAME: mockpitadmin
-      #SPRING_DATASOURCE_PASSWORD: admin
       SPRING_APPLICATION_JSON: '{
-              "spring.datasource.url"  : "jdbc:postgresql://db:5433/mockpitdb",
+              "spring.datasource.url"  : "jdbc:postgresql://db:5432/mockpitdb",
               "spring.datasource.username" : "mockpitadmin",
               "spring.datasource.password" : "admin"
             }'
 
   mockpit-client:
-    container_name: mockpit-client
     image: mockpit-client:1.0.0-RELEASE
+    build:
+      context: client/mockpit-ui/
+      dockerfile: client/mockpit-ui/Dockerfile
+    environment:
+      backendUrl: http://localhost:8080
     ports:
       - "4200:80"
-    environment:
-      backendUrl: http://mockpit-server:8081
 
   db:
     container_name: db
     image: postgres:15
     ports:
-      - "5433:5432"
+      - "5432:5432"
     environment:
       POSTGRES_DB: mockpitdb
       POSTGRES_USER: mockpitadmin
       POSTGRES_PASSWORD: admin
     volumes:
       - "mockpitpgdata:/var/lib/postgresql/data"
-    command: -p 5433
+    command: -p 5432
 volumes:
   mockpitpgdata:
