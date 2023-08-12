@@ -3,6 +3,9 @@ services:
   mockpit-server:
     container_name: mockpit-server
     image: mockpit-server:1.0.0-RELEASE
+    build:
+      context: server/
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     depends_on:
@@ -16,6 +19,9 @@ services:
 
   mockpit-client:
     image: mockpit-client:1.0.0-RELEASE
+    build:
+      context: client/mockpit-ui/
+      dockerfile: Dockerfile
     environment:
       backendUrl: http://localhost:8080
     ports:

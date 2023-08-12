@@ -5,6 +5,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router'
 import { ToastrService } from 'ngx-toastr';
 
 import { Mock, MockResponse, ResponseHeader } from 'src/app/models/mock/mock.model';
+import { ConfigService } from 'src/app/services/config.service';
 import { MockService } from 'src/app/services/mock.service';
 
 @Component({
@@ -22,7 +23,7 @@ export class MockDetailComponent implements OnInit {
 
   errorMessage?: string;
 
-  constructor(private route: ActivatedRoute, private router: Router, private mockService: MockService, private toast: ToastrService) {
+  constructor(private route: ActivatedRoute, private router: Router, private mockService: MockService, private toast: ToastrService, public configService: ConfigService) {
     this.initialize();
   }
 
