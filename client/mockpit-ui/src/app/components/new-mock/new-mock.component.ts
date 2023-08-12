@@ -54,7 +54,7 @@ export class NewMockComponent implements OnInit {
         this.toast.success("Mock saved", "Success");
       },
       (error) => {
-        this.toast.error(error.error.message, "Error");
+        this.toast.error(error.error.message?error.error.message: "Something went wrong while saving mock. Please contact administrator", "Error");
       });
   }
 

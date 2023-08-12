@@ -67,8 +67,6 @@ export class MockDetailComponent implements OnInit {
       'active': new FormControl(mock?.active)
     });
     this.initializeResponseHeaderContorls(this.mock?.responseHeaders);
-
-    console.log(this.mockForm);
   }
 
   onSubmit() {

@@ -1,11 +1,11 @@
-import { DomSanitizer } from '@angular/platform-browser';
+
 import { Renderer2 } from '@angular/core'
 import { AfterViewInit, ViewChild, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { ToastrService } from 'ngx-toastr';
-import { Observable, Subject, map, switchMap, takeUntil } from 'rxjs';
+import { Observable, Subject, map, of, switchMap, takeUntil } from 'rxjs';
 
 import { Mock, MockResponse } from 'src/app/models/mock/mock.model';
 import { MockService } from 'src/app/services/mock.service';
@@ -67,6 +67,10 @@ export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.mocks$.subscribe(mocks => {
       this.dataSource = new MatTableDataSource<Mock>(mocks)
 
+    },
+    (error)=>{
+      this.mocks$.next([]);
+      this.toast.error("Something went wrong while fetching mocks. Please contact administrator", "Error");
     });
   }
 
@@ -100,6 +104,10 @@ export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.mocks$.next(mockResponse.data.content);
         this.length = mockResponse.data.totalElements;
         this.isLoading = false;
+      },
+      (error)=>{
+        this.mocks$.next([]);
+        this.toast.error("Something went wrong while fetching mocks. Please contact administrator", "Error");
       }
     );
   }
@@ -110,7 +118,9 @@ export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.toast.success("Mock deleted.", "Success");
         this.getMocks()
       },
-      (error) => { }
+      (error) => {
+        this.toast.error(error.error.message? error.error.message : "Something went wrong while deleting mock. Please contact administrator.", "Error");
+       }
     );
   }
 
@@ -159,8 +169,7 @@ export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.toast.success(response.message, 'Success');
       },
       (error) => {
-        console.error(error);
-        this.toast.error(error.error.message, 'Error');
+        this.toast.error(error.error.message?error.error.message: "Something went wrong while importing mocks. Please contact administrator", 'Error');
       }
     );
   }
