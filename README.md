@@ -12,6 +12,20 @@ Mockpit is a versatile and user-friendly REST API mock server that empowers deve
 - **Easy-to-Use Configuration**: Mockpit's intuitive user interface lets you create, edit, and manage mock APIs effortlessly.
 - **Fast and Lightweight**: Mockpit is designed to be fast and lightweight, ensuring minimal impact on your development workflow.
 
+## Guides
+
+- [What is Mockpit?](https://github.com/sranmanpreet/mockpit/wiki/What-is-Mockpit)
+- [Setting up the application](https://github.com/sranmanpreet/mockpit/wiki/Setting-up-the-application)
+  - [Native Installation](https://github.com/sranmanpreet/mockpit/wiki/Setup-Mockpit-natively)
+  - [Docker Installation](https://github.com/sranmanpreet/mockpit/wiki/Setup-Mockpit-via-Docker)
+  - [Docker Compose Installation](https://github.com/sranmanpreet/mockpit/wiki/Setup-Mockpit-via-Docker)
+- Using Mockpit:
+  - Coming soon...
+- Creating Mocks:
+  - Coming soon...
+
+
+
 ## Getting Started
 
 ### Installation
