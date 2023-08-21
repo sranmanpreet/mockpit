@@ -62,6 +62,14 @@ docker run -p 4200:80 -e backendUrl=http://localhost:8080 sranmanpreet/mockpit-s
 ```
 Mockpit will be accessible at http://localhost:4200
 
+#### Installation using Docker Compose
+- Run following command at the root of the  project
+ ```
+docker-compose -f docker-compose.yml up -d
+ ```
+ 
+Mockpit will be accessible at http://localhost:4200
+
 ### Usage
 1. After installation with default configurations, access the Mockpit web interface by navigating to http://localhost:4200 in your web browser.
 
