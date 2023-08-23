@@ -15,14 +15,18 @@ Mockpit is a versatile and user-friendly REST API mock server that empowers deve
 ## Guides
 
 - [What is Mockpit?](https://github.com/sranmanpreet/mockpit/wiki/What-is-Mockpit)
-- [Setting up the application](https://github.com/sranmanpreet/mockpit/wiki/Setting-up-the-application)
-  - [Native Installation](https://github.com/sranmanpreet/mockpit/wiki/Setup-Mockpit-natively)
-  - [Docker Installation](https://github.com/sranmanpreet/mockpit/wiki/Setup-Mockpit-via-Docker)
-  - [Docker Compose Installation](https://github.com/sranmanpreet/mockpit/wiki/Setup-Mockpit-via-Docker)
-- Using Mockpit:
-  - Coming soon...
-- Creating Mocks:
-  - Coming soon...
+- [Setting up the application](https://github.com/sranmanpreet/mockpit/wiki/Setting-up-Mockpit)
+    - [Native Installation](https://github.com/sranmanpreet/mockpit/wiki/Setup-Mockpit-natively)
+    - [Docker Installation](https://github.com/sranmanpreet/mockpit/wiki/Setup-Mockpit-via-Docker)
+    - [Docker Compose Installation](https://github.com/sranmanpreet/mockpit/wiki/Setup-Mockpit-via-Docker)
+- [Using Mockpit](https://github.com/sranmanpreet/mockpit/wiki/Using-Mockpit)
+    - [Homepage](https://github.com/sranmanpreet/mockpit/wiki/Using-Homepage)
+    - [Mock Form](https://github.com/sranmanpreet/mockpit/wiki/Using-Mock-Form)
+    - [Manage Mocks](https://github.com/sranmanpreet/mockpit/wiki/Using-Manage-Mocks)
+- [Creating Mocks](https://github.com/sranmanpreet/mockpit/wiki/Creating-Mocks)
+    - [Create a simple static mock](https://github.com/sranmanpreet/mockpit/wiki/Create-a-simple-static-mock)
+    - [Create a dynamic mock with JavaScript](https://github.com/sranmanpreet/mockpit/wiki/Creating-a-dynamic-mock-with-javascript)
+    - [Create a dynamic mock using query parameter and path variables with JavaScript](https://github.com/sranmanpreet/mockpit/wiki/Creating-a-dynamic-mock-using-variables-with-javascript)
 
 
 
