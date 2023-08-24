@@ -18,7 +18,7 @@ Mockpit is a versatile and user-friendly REST API mock server that empowers deve
 - [Setting up the application](https://github.com/sranmanpreet/mockpit/wiki/Setting-up-Mockpit)
     - [Native Installation](https://github.com/sranmanpreet/mockpit/wiki/Setup-Mockpit-natively)
     - [Docker Installation](https://github.com/sranmanpreet/mockpit/wiki/Setup-Mockpit-via-Docker)
-    - [Docker Compose Installation](https://github.com/sranmanpreet/mockpit/wiki/Setup-Mockpit-via-Docker)
+    - [Docker Compose Installation](https://github.com/sranmanpreet/mockpit/wiki/Setup-Mockpit-via-Docker-Compose)
 - [Using Mockpit](https://github.com/sranmanpreet/mockpit/wiki/Using-Mockpit)
     - [Homepage](https://github.com/sranmanpreet/mockpit/wiki/Using-Homepage)
     - [Mock Form](https://github.com/sranmanpreet/mockpit/wiki/Using-Mock-Form)
