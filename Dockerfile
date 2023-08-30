@@ -5,9 +5,9 @@ FROM nginx:alpine
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Copy the built frontend and backend images to the nginx directory
-COPY --from=mockpit-client:1.0.1-SNAPSHOT /usr/share/nginx/html /usr/share/nginx/html/
+COPY --from=sranmanpreet/mockpit-client:1.0.1-RELEASE /usr/share/nginx/html /usr/share/nginx/html/
 COPY ./entryPoint.sh /
-COPY --from=sranmanpreet/mockpit-server:1.0.0-RELEASE /app/mockpit.jar /app/mockpit-server.jar
+COPY --from=sranmanpreet/mockpit-server:1.0.1-RELEASE /app/mockpit.jar /app/mockpit-server.jar
 
 EXPOSE 80
 
