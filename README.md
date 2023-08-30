@@ -70,13 +70,20 @@ Mockpit is a versatile and user-friendly REST API mock server that empowers deve
    ```
    Client will be deployed on http://localhost:4200 by default.
 #### Installation using Docker
+- Install Mockpit
+ ```
+docker run -e "SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/mockpitdb" -e "SPRING_DATASOURCE_USERNAME=postgres" -e "SPRING_DATASOURCE_PASSWORD=postgres" -e "backendUrl=http://localhost:8080" -p 4200:80 -p 8080:8080 sranmanpreet/mockpit:1.0.1-RELEASE
+ ``` 
+It will run Mockpit client at http://localhost:4200 and Mockpit server at http://localhost:8080. 
+
+Separate images for Mockpit client and server are also available. Follow below steps to install client and server individually.
 - Install Server
  ```
-docker run -e "SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/moock" -e "SPRING_DATASOURCE_USERNAME=postgres" -e "SPRING_DATASOURCE_PASSWORD=postgres" -p 8080:8080 mockpit-server:1.0.0-RELEASE
+docker run -e "SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/mockpitdb" -e "SPRING_DATASOURCE_USERNAME=postgres" -e "SPRING_DATASOURCE_PASSWORD=postgres" -p 8080:8080 mockpit-server:1.0.1-RELEASE
  ```
 - Install Client
 ```
-docker run -p 4200:80 -e backendUrl=http://localhost:8080 sranmanpreet/mockpit-server:1.0.0-RELEASE
+docker run -p 4200:80 -e backendUrl=http://localhost:8080 sranmanpreet/mockpit-server:1.0.1-RELEASE
 ```
 Mockpit will be accessible at http://localhost:4200
 
@@ -85,8 +92,6 @@ Mockpit will be accessible at http://localhost:4200
  ```
 docker-compose -f docker-compose.yml up -d
  ```
- 
-Mockpit will be accessible at http://localhost:4200
 
 ### Usage
 1. After installation with default configurations, access the Mockpit web interface by navigating to http://localhost:4200 in your web browser.
