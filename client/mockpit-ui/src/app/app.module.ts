@@ -24,10 +24,21 @@ import { NewMockComponent } from './components/new-mock/new-mock.component';
 import { SearchComponent } from './components/search/search.component';
 import { TruncatePipe } from './pipes/truncate.pipe';
 import { FooterComponent } from './components/footer/footer.component';
+import { APP_BASE_HREF, PlatformLocation } from '@angular/common';
 
 
 export function initializeApp(configService: ConfigService): () => Promise<any> {
   return () => configService.loadConfig();
+}
+
+function trimLastSlashFromUrl(baseUrl: string) {
+  if (baseUrl == null || baseUrl == "") {
+      return null;
+  } else if (baseUrl[baseUrl.length - 1] == '/') {
+      var trimmedUrl = baseUrl.substring(0, baseUrl.length - 1);
+      return trimmedUrl;
+  }
+  return null;
 }
 
 @NgModule({
@@ -67,7 +78,13 @@ export function initializeApp(configService: ConfigService): () => Promise<any> 
       deps: [ConfigService],
       multi: true,
     },
+    {
+      provide: APP_BASE_HREF,
+      useFactory: (s: PlatformLocation) => trimLastSlashFromUrl(s.getBaseHrefFromDOM()),
+      deps: [PlatformLocation]
+    }
   ],
   bootstrap: [AppComponent]
 })
+
 export class AppModule { }

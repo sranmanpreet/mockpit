@@ -12,6 +12,9 @@ export class MockService {
 
   constructor(private http: HttpClient, private configService: ConfigService){
     this.backendUrl = this.configService.getConfig().backendUrl;
+    if(this.backendUrl.charAt(this.backendUrl.length-1) == '/'){
+      this.backendUrl = this.backendUrl.slice(0, this.backendUrl.length-1);
+    }
   }
   
   public getMocks(pageNo?: number, pageSize?:number) : Observable<MockResponse> {
