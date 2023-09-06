@@ -3,11 +3,15 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <include
-        file="classpath:liquibase/changelog/release_1.0/initial_tables.xml"
-        relativeToChangelogFile="false" />
-    <include
-            file="classpath:liquibase/changelog/release_1.1/add_inactive_flag_to_mock_table.xml"
-            relativeToChangelogFile="false" />
+    <changeSet id="add_inactive_column_to_mock_table" author="sranmanpreet">
+        <addColumn tableName="mock">
+            <column name="inactive" type="boolean" defaultValueBoolean="false">
+            </column>
+        </addColumn>
+    </changeSet>
+
+
+
+    <!-- additional change sets for other entities go here -->
 
 </databaseChangeLog>

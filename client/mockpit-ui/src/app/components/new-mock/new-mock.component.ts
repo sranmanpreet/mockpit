@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Mock, MockResponse, ResponseHeader } from 'src/app/models/mock/mock.model';
 import { ConfigService } from 'src/app/services/config.service';
 import { MockService } from 'src/app/services/mock.service';
+import { needConfirmation } from '../shared/confirmation-dialog/confirmation-dialog.decorator';
 
 @Component({
   selector: 'app-new-mock',
@@ -44,7 +45,7 @@ export class NewMockComponent implements OnInit {
       'responseStatus': new FormGroup({
         'code': new FormControl(null)
       }),
-      'active': new FormControl(null)
+      'inactive': new FormControl(null)
     });
   }
 
@@ -59,6 +60,10 @@ export class NewMockComponent implements OnInit {
       });
   }
 
+  @needConfirmation({
+    title : "Confirmation",
+    message : "Are you sure you want to discard unsaved data ?"
+  })
   onCancel() {
     this.initializeForm(undefined);
   }

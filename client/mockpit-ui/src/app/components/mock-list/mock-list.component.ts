@@ -11,6 +11,7 @@ import { Mock, MockResponse } from 'src/app/models/mock/mock.model';
 import { MockService } from 'src/app/services/mock.service';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
+import { needConfirmation } from '../shared/confirmation-dialog/confirmation-dialog.decorator';
 
 @Component({
   selector: 'app-mock-list',
@@ -112,6 +113,10 @@ export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
+  @needConfirmation({
+    title : "Delete Confirmation",
+    message : "Are you sure you want to delete this mock ?"
+  })
   deleteMock(id: number) {
     this.mockService.deleteMockById(id).subscribe(
       (response) => {

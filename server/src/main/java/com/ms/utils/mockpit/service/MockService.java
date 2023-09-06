@@ -81,6 +81,7 @@ public class MockService {
         // Update fields of the existing mock
         existingMock.setName(mockDTO.getName());
         existingMock.setDescription(mockDTO.getDescription());
+        existingMock.setInactive(mockDTO.getInactive());
         RouteDTO route = mockDTO.getRoute();
         if(!route.getPath().startsWith("/")){
             route.setPath("/"+route.getPath());

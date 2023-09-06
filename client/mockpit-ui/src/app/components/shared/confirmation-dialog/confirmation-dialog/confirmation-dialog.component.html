@@ -1,0 +1,14 @@
+
+<div class="header flex justify-between">
+    <h2 mat-dialog-title>{{data.title}}</h2>
+    <button [mat-dialog-close]="false" class="mr-4 border-none hover:border-none hover:bg-transparent hover:shadow-none">
+        <img class="m-auto w-5 h-5 cursor-pointer hover:bg-zinc-100" src="assets/icons/close.svg" alt="Close Confirmation Dialog">
+    </button>
+</div>
+<div mat-dialog-content>
+    {{data.message}}
+</div>
+<div [align]="'end'" class="px-6 py-4 space-x-4">
+    <button type="button" class="google-button h-min" [mat-dialog-close]="false">Cancel</button>
+    <button type="button" class="google-button red h-min" [mat-dialog-close]="true">Confirm</button>
+</div>

@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Mock, MockResponse, ResponseHeader } from 'src/app/models/mock/mock.model';
 import { ConfigService } from 'src/app/services/config.service';
 import { MockService } from 'src/app/services/mock.service';
+import { needConfirmation } from '../shared/confirmation-dialog/confirmation-dialog.decorator';
 
 @Component({
   selector: 'app-mock-detail',
@@ -65,7 +66,7 @@ export class MockDetailComponent implements OnInit {
       'responseStatus': new FormGroup({
         'code': new FormControl(mock?.responseStatus.code)
       }),
-      'active': new FormControl(mock?.active)
+      'inactive': new FormControl(mock?.inactive)
     });
     this.initializeResponseHeaderContorls(this.mock?.responseHeaders);
   }
@@ -85,10 +86,18 @@ export class MockDetailComponent implements OnInit {
     return (this.mockForm.get('responseHeaders') as FormArray).controls;
   }
 
+  @needConfirmation({
+    title : "Confirmation",
+    message : "Are you sure you want to discard unsaved data ?"
+  })
   onCancel(){
     this.initializeForm(this.mock);
   }
 
+  @needConfirmation({
+    title : "Delete Confirmation",
+    message : "Are you sure you want to delete this mock ?"
+  })
   onDelete(){
     this.mockService.deleteMockById(this.mock?.id).subscribe(
       (data)=> {

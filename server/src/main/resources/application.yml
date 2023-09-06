@@ -1,3 +1,6 @@
+app:
+   name: Mockpit
+   version: 1.1.0
 spring:
    liquibase:
       change-log: classpath:liquibase/master.xml
@@ -54,3 +57,7 @@ springdoc:
       enabled: true
       title: Mock Buddy API
       description: A REST Mock Server
+
+dynamic-mocks:
+   path-variable-prefix: "pathVariable___"
+   query-parameter-prefix: "queryParameter___"

@@ -1,0 +1,1 @@
+docker stop mockpit && docker rm mockpit

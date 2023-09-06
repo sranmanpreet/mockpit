@@ -17,13 +17,13 @@
                         placeholder="Returns list of all the tasks planned for the day."
                         formControlName="description"></textarea>
                 </div>
-                <!-- <div class="mb-6 basis-1/6 justify-self-end">
+                <div class="mb-6 basis-1/6 justify-self-end">
                     <input id="default-checkbox" type="checkbox"
                         class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                        formControlName="active">
+                        formControlName="inactive">
                     <label for="default-checkbox"
-                        class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Active</label>
-                </div> -->
+                        class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Inactive</label>
+                </div>
             </div>
             <div formGroupName="route" class="flex flex-col lg:flex-row lg:space-x-6">
                 <div class="mb-6 basis-1/4">
@@ -114,7 +114,7 @@
         </div>
         <div class="actions flex space-x-6">
             <button type="submit" class="google-button blue h-min">Save</button>
-            <button type="button" class="google-button h-min" (click)="onCancel()">Cancel</button>
+            <button type="button" class="google-button h-min" (click)="onCancel()" [disabled]="mockForm.pristine" [ngClass]="mockForm.pristine?'text-slate-200 hover:text-slate-200':''">Cancel</button>
             <button type="button" class="google-button red h-min" (click)="onDelete()">Delete</button>
         </div>
     </form>
