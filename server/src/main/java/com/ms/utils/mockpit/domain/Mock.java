@@ -20,6 +20,8 @@ public class Mock extends AbstractEntity {
 
     private String description;
 
+    private boolean inactive;
+
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "route_id")
     private Route route;
@@ -41,6 +43,12 @@ public class Mock extends AbstractEntity {
     public Mock(String name, String description){
         this.name = name;
         this.description = description;
+    }
+
+    public Mock(String name, String description, boolean inactive){
+        this.name = name;
+        this.description = description;
+        this.inactive = inactive;
     }
 
     public Long getId() {
@@ -66,6 +74,10 @@ public class Mock extends AbstractEntity {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public boolean getInactive() { return inactive; }
+
+    public void setInactive(boolean inactive) { this.inactive = inactive;}
 
     public Route getRoute() {
         return route;

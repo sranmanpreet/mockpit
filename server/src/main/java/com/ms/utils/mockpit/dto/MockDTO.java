@@ -8,6 +8,7 @@ public class MockDTO {
     private Long id;
     private String name;
     private String description;
+    private boolean inactive;
     private RouteDTO route;
     private List<ResponseHeaderDTO> responseHeaders;
     private ResponseBodyDTO responseBody;
@@ -37,6 +38,14 @@ public class MockDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean getInactive() {
+        return inactive;
+    }
+
+    public void setInactive(boolean inactive) {
+        this.inactive = inactive;
     }
 
     public RouteDTO getRoute() {

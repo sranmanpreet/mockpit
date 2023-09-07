@@ -19,10 +19,10 @@ public interface MockRepository extends JpaRepository<Mock, Long> {
 
     Optional<Mock> findByRoute(String route);
 
-    @Query("SELECT m FROM Mock m JOIN m.route r WHERE r.path = :route AND r.method = :method")
+    @Query("SELECT m FROM Mock m JOIN m.route r WHERE r.path = :route AND r.method = :method AND m.inactive = false")
     List<Mock> findByRouteAndMethod(@Param("route") String route, @Param("method") String method);
 
-    @Query("SELECT m FROM Mock m JOIN m.route r WHERE r.method = :method")
+    @Query("SELECT m FROM Mock m JOIN m.route r WHERE r.method = :method AND m.inactive = false")
     List<Mock> findByMethod(@Param("method") String method);
 
     @Query("SELECT m FROM Mock m " +

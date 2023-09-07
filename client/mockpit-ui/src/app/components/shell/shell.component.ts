@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AppService } from 'src/app/services/app.service';
 
 @Component({
   selector: 'app-shell',
@@ -7,4 +8,15 @@ import { Component } from '@angular/core';
 })
 export class ShellComponent {
 
+  version: string = "";
+
+  constructor(private appService: AppService) {
+    this.getAppVersion();
+  }
+
+  getAppVersion(){
+    this.appService.getApplicationProperties().subscribe(properties => {
+      this.version = properties.version;
+    });
+  }
 }

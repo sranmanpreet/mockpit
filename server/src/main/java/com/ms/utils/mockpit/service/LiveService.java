@@ -1,12 +1,10 @@
 package com.ms.utils.mockpit.service;
 
-import com.ms.utils.mockpit.aop.exception.MockNotFoundException;
-import com.ms.utils.mockpit.domain.Mock;
 import com.ms.utils.mockpit.dto.LiveResponseDTO;
 import com.ms.utils.mockpit.dto.MockDTO;
+import com.ms.utils.mockpit.dto.ResponseHeaderDTO;
 import com.ms.utils.mockpit.mapper.MockDTOLiveResponseDTOMapper;
 import com.ms.utils.mockpit.util.MockpitUtil;
-import com.ms.utils.mockpit.web.LiveResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,5 +65,14 @@ public class LiveService {
             }
         }
         return null;
+    }
+
+    public void replaceContentTypeHeaderIfAny(LiveResponseDTO liveResponse){
+        List<ResponseHeaderDTO> headers = liveResponse.getHeaders();
+        for(ResponseHeaderDTO header: headers){
+            if(header.getName().equalsIgnoreCase("Content-Type")){
+                liveResponse.setContentType(header.getValue());
+            }
+        }
     }
 }

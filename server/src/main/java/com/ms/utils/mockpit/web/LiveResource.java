@@ -7,7 +7,6 @@ import com.ms.utils.mockpit.service.LiveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,9 +35,11 @@ public class LiveResource {
         if(Objects.isNull(liveResponse)){
             throw new MockNotFoundException("Resource not found");
         }
+        liveResponseService.replaceContentTypeHeaderIfAny(liveResponse);
         liveResponse.getHeaders().forEach(header -> response.addHeader(header.getName(), header.getValue()));
 
         return ResponseEntity.status(liveResponse.getStatusCode())
-                .contentType(MediaType.parseMediaType(liveResponse.getContentType())).body(liveResponse.getBody());
+                .contentType(MediaType.parseMediaType(liveResponse.getContentType()))
+                .body(liveResponse.getBody());
     }
 }
