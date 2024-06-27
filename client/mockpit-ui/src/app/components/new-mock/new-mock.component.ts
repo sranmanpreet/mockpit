@@ -64,8 +64,12 @@ export class NewMockComponent implements OnInit {
     title : "Confirmation",
     message : "Are you sure you want to discard unsaved data ?"
   })
-  onCancel() {
+  onReset() {
     this.initializeForm(undefined);
+  }
+
+  onCancel() {
+    this.router.navigate(['/']);
   }
 
   getResponseHeaderControls() {
