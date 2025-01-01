@@ -113,7 +113,8 @@
         </div>
         <div class="actions flex space-x-6">
             <button type="submit" class="google-button blue h-min">Save</button>
-            <button type="button" class="google-button h-min" (click)="onCancel()" [disabled]="mockForm.pristine" [ngClass]="mockForm.pristine?'text-slate-200 hover:text-slate-200':''">Cancel</button>
+            <button type="button" class="google-button grey h-min" (click)="onCancel()">Cancel</button>
+            <button type="button" class="google-button h-min" (click)="onReset()" [disabled]="mockForm.pristine" [ngClass]="mockForm.pristine?'text-slate-200 hover:text-slate-200':''">Reset</button>
         </div>
     </form>
     <div class="error h-[50vh] w-full flex" *ngIf="errorMessage">
