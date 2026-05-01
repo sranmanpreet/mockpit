@@ -4,6 +4,57 @@ All notable changes to this project will be documented in this file. The format 
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-05-01
+
+Toolchain refresh: project now compiles, runs, and tests on the latest LTS-grade stack. No
+behavioural changes; this is purely a platform upgrade.
+
+### Changed
+- **JDK runtime upgraded to Eclipse Temurin 26** (`eclipse-temurin:26-jre-noble`); source/target
+  bytecode bumped from Java 11 to **Java 21** so artefacts remain consumable on JDK 21+.
+- **Spring Boot 2.7.18 → 3.5.14** (full Jakarta EE 9+ migration: `javax.*` → `jakarta.*` across
+  Servlet, Persistence, Validation, Annotation, Transaction).
+- **Spring Security 6** API surface adopted (`securityMatcher`, `requestMatchers`, explicit
+  `CsrfTokenRequestAttributeHandler` configuration for the Angular SPA).
+- **JJWT 0.11 → 0.12.7**, **Bucket4j 7 → 8.14.0**, **springdoc-openapi 1 → 2.8.14** (web-mvc-ui
+  starter), **GraalVM 22 → 24.1.2** (Community), **JaCoCo 0.8.13 → 0.8.14** (Java 26 class-file
+  support), **Liquibase 4.27 → 4.32.0**, **PostgreSQL JDBC 42.7.4 → 42.7.7**, **MapStruct 1.5.5
+  → 1.6.3**, **Lombok 1.18.34 → 1.18.42**, **Caffeine 3.1 → 3.2.2**, **Nimbus JOSE+JWT 9 → 10.4**,
+  **WireMock 3.6 → 3.13.2**, **OWASP Dependency-Check 9 → 12.1.5**.
+- **Angular 15.2 → 21.2.11** (`@angular-devkit/build-angular:browser` → `@angular/build:application`
+  esbuild builder, Material M3 prebuilt theme, `provideHttpClient` + `withXsrfConfiguration` +
+  `withInterceptorsFromDi` instead of the deprecated `HttpClientModule` / `HttpClientXsrfModule`,
+  every `@Component` / `@Pipe` declared with `standalone: false` to keep the existing NgModule
+  layout working). **TypeScript 4.9 → 5.9.3**, **zone.js 0.12 → 0.15**, **ngx-toastr 16 → 20.0.5**.
+- **Node 18 → 22** (Docker images: `node:22-alpine`).
+- **PostgreSQL 15 → 18** (`postgres:18-alpine` for both runtime and Testcontainers).
+- **GitHub Actions** server / client / security-scan jobs bumped to JDK 26 + Node 22.
+- `tsconfig.json` switched to `moduleResolution: "bundler"` (required by Angular 17+).
+
+### Fixed
+- `JwtAuthValidatorTest.rejectsTamperedSignature` now flips a mid-signature character — JJWT
+  0.12's lenient base64url decoder treated `'A'` and `'B'` as the same trailing byte for
+  HMAC-SHA256, masking the tampering.
+- `JavaScriptExecutionService` now detects when GraalVM Community refuses the
+  `MaxStatements` sandbox limit (an enterprise-only feature) and gracefully falls back to the
+  wall-clock timeout watchdog instead of failing on every JS evaluation.
+- `SafeHttpClient` gains a test-only `mockpit.http-client.allow-loopback` escape hatch so the
+  WireMock-based OAuth2 introspection tests can reach `127.0.0.1` without disabling the SSRF
+  filter in production.
+- `AuthConfig` Jackson deserialisation tolerates the `type` discriminator being present in the
+  payload (kept visible for the UI) without requiring a setter on the abstract class.
+- `BasicAuthConfig.passwordHash` is now persisted/round-tripped correctly; the
+  `AuthConfigCodec#redactForResponse` step strips it before it reaches the UI.
+- `MockpitApplicationTests` renamed to `MockpitApplicationIT` so it is excluded from the
+  `mvn test` (unit) phase and only runs in `mvn verify` where Docker is expected.
+
+### Migration notes
+- Operators must run on **JDK 21 or newer** (JDK 26 recommended). The runtime container ships
+  with JDK 26 and `--enable-native-access=ALL-UNNAMED` baked into `JAVA_OPTS`.
+- The Angular dev-server output path changed shape (`dist/` instead of `dist/mockpit-ui/`); the
+  Dockerfiles and reverse-proxy configs already reflect this.
+- Tailwind, ngx-toastr CSS, and Material theme imports continue to work unchanged for end-users.
+
 ## [2.0.0] - 2026-04-29
 
 This is a breaking, foundational release. Multi-tenancy, per-mock authentication, and a top-to-

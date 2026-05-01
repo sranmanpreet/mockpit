@@ -7,13 +7,14 @@ import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.PolyglotAccess;
 import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.Value;
+import org.graalvm.polyglot.io.IOAccess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executors;
@@ -47,6 +48,7 @@ public class JavaScriptExecutionService {
     private final ScheduledExecutorService watchdog;
     private final MockpitProperties properties;
     private final Environment env;
+    private volatile boolean sandboxLimitsSupported = true;
 
     @Autowired
     public JavaScriptExecutionService(MockpitProperties properties, Environment env) {
@@ -109,12 +111,16 @@ public class JavaScriptExecutionService {
         long maxStatements = properties.getJsSandbox().getMaxStatements();
         int maxBytes = properties.getJsSandbox().getMaxOutputBytes();
 
+        // GraalVM 24.x community does NOT support sandbox.* / engine.MaxStatements options
+        // (those are enterprise extensions). The wall-clock watchdog below remains the primary
+        // safety net for runaway scripts. {@code maxStatements} is therefore only effective when
+        // running on a GraalVM Enterprise runtime; we ignore the field on community.
         Context.Builder builder = Context.newBuilder(LANG)
                 .engine(engine)
                 .allowAllAccess(false)
                 .allowHostAccess(HostAccess.NONE)
                 .allowPolyglotAccess(PolyglotAccess.NONE)
-                .allowIO(false)
+                .allowIO(IOAccess.NONE)
                 .allowNativeAccess(false)
                 .allowCreateThread(false)
                 .allowHostClassLoading(false)
@@ -125,18 +131,11 @@ public class JavaScriptExecutionService {
                 .option("js.load", "false")
                 .option("js.print", "false");
 
-        try {
+        if (maxStatements > 0 && sandboxLimitsSupported) {
             builder.option("sandbox.MaxStatements", String.valueOf(maxStatements));
-        } catch (IllegalArgumentException ignored) {
-            // older GraalVM versions used a different option key. Best-effort.
-            try {
-                builder.option("engine.MaxStatements", String.valueOf(maxStatements));
-            } catch (IllegalArgumentException ignored2) {
-                LOGGER.debug("Statement-limit option not supported on this GraalJS version; relying on wall-clock timeout only.");
-            }
         }
 
-        try (Context context = builder.build()) {
+        try (Context context = openContext(builder)) {
             String queryParamPrefix = orDefault(env.getProperty("dynamic-mocks.query-parameter-prefix"), "queryParameter___");
             String pathVariablePrefix = orDefault(env.getProperty("dynamic-mocks.path-variable-prefix"), "pathVariable___");
 
@@ -174,6 +173,42 @@ public class JavaScriptExecutionService {
                     + (e.getMessage() == null ? "" : ": " + e.getMessage().split("\\R")[0]);
             LOGGER.warn("JavaScript execution failed: {}", safeMsg);
             return JsResult.fail(safeMsg);
+        }
+    }
+
+    /**
+     * Build a Context, falling back to a no-sandbox-limits builder if the runtime rejects the
+     * sandbox option (GraalVM community vs. enterprise). The community runtime throws
+     * {@code PolyglotException}, the enterprise/native one throws {@code IllegalArgumentException}
+     * for unknown options - we accept either.
+     */
+    private Context openContext(Context.Builder primary) {
+        try {
+            return primary.build();
+        } catch (RuntimeException ex) {
+            String msg = ex.getMessage() == null ? "" : ex.getMessage();
+            if (!msg.contains("sandbox") && !(ex instanceof IllegalArgumentException)) {
+                throw ex;
+            }
+            sandboxLimitsSupported = false;
+            LOGGER.info("GraalVM runtime does not support sandbox limits ({}); falling back to wall-clock timeout only.",
+                    msg.isEmpty() ? ex.getClass().getSimpleName() : msg.split("\\R")[0]);
+            return Context.newBuilder(LANG)
+                    .engine(engine)
+                    .allowAllAccess(false)
+                    .allowHostAccess(HostAccess.NONE)
+                    .allowPolyglotAccess(PolyglotAccess.NONE)
+                    .allowIO(IOAccess.NONE)
+                    .allowNativeAccess(false)
+                    .allowCreateThread(false)
+                    .allowHostClassLoading(false)
+                    .allowHostClassLookup(s -> false)
+                    .allowExperimentalOptions(true)
+                    .option("js.ecmascript-version", "2022")
+                    .option("js.console", "false")
+                    .option("js.load", "false")
+                    .option("js.print", "false")
+                    .build();
         }
     }
 

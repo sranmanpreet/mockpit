@@ -1,0 +1,87 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Backend: Mockpit (debug)",
+      "request": "launch",
+      "mainClass": "com.ms.utils.mockpit.MockpitApplication",
+      "projectName": "mockpit",
+      "cwd": "${workspaceFolder}/server",
+      "console": "integratedTerminal",
+      "vmArgs": [
+        "--enable-native-access=ALL-UNNAMED",
+        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+        "--add-opens=java.base/java.util=ALL-UNNAMED",
+        "--add-opens=java.base/java.lang.reflect=ALL-UNNAMED"
+      ],
+      "args": [],
+      "env": {
+        "SPRING_PROFILES_ACTIVE": "dev",
+        "SPRING_DATASOURCE_URL": "jdbc:postgresql://localhost:5433/mockpitdb",
+        "SPRING_DATASOURCE_USERNAME": "postgres",
+        "SPRING_DATASOURCE_PASSWORD": "admin",
+        "SERVER_PORT": "8080"
+      }
+    },
+    {
+      "type": "java",
+      "name": "Backend: Mockpit (current file test)",
+      "request": "launch",
+      "mainClass": "",
+      "projectName": "mockpit",
+      "cwd": "${workspaceFolder}/server",
+      "console": "integratedTerminal",
+      "vmArgs": [
+        "--enable-native-access=ALL-UNNAMED",
+        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+        "--add-opens=java.base/java.util=ALL-UNNAMED",
+        "--add-opens=java.base/java.lang.reflect=ALL-UNNAMED"
+      ]
+    },
+    {
+      "type": "chrome",
+      "name": "Frontend: Chrome (attach to ng serve)",
+      "request": "launch",
+      "url": "http://localhost:4200",
+      "webRoot": "${workspaceFolder}/client/mockpit-ui",
+      "preLaunchTask": "frontend: ng serve",
+      "sourceMapPathOverrides": {
+        "webpack:///./*": "${webRoot}/*",
+        "webpack:///src/*": "${webRoot}/src/*",
+        "webpack:///*": "*",
+        "webpack:///./~/*": "${webRoot}/node_modules/*"
+      },
+      "userDataDir": "${workspaceFolder}/.vscode/.chrome-debug"
+    },
+    {
+      "type": "msedge",
+      "name": "Frontend: Edge (attach to ng serve)",
+      "request": "launch",
+      "url": "http://localhost:4200",
+      "webRoot": "${workspaceFolder}/client/mockpit-ui",
+      "preLaunchTask": "frontend: ng serve",
+      "sourceMapPathOverrides": {
+        "webpack:///./*": "${webRoot}/*",
+        "webpack:///src/*": "${webRoot}/src/*",
+        "webpack:///*": "*",
+        "webpack:///./~/*": "${webRoot}/node_modules/*"
+      },
+      "userDataDir": "${workspaceFolder}/.vscode/.edge-debug"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack: Backend + Frontend (Chrome)",
+      "configurations": ["Backend: Mockpit (debug)", "Frontend: Chrome (attach to ng serve)"],
+      "stopAll": true,
+      "presentation": { "group": "1_full-stack", "order": 1 }
+    },
+    {
+      "name": "Full Stack: Backend + Frontend (Edge)",
+      "configurations": ["Backend: Mockpit (debug)", "Frontend: Edge (attach to ng serve)"],
+      "stopAll": true,
+      "presentation": { "group": "1_full-stack", "order": 2 }
+    }
+  ]
+}

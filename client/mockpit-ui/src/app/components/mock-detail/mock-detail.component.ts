@@ -15,7 +15,8 @@ import { needConfirmation } from '../shared/confirmation-dialog/confirmation-dia
   styleUrls: ['./mock-detail.component.scss'],
   host: {
     class: "container"
-  }
+  },
+  standalone: false
 })
 export class MockDetailComponent implements OnInit {
   mock: Mock | undefined;

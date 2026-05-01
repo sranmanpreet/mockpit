@@ -1,0 +1,101 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "backend: clean+package (skip tests)",
+      "type": "shell",
+      "command": "mvn",
+      "args": ["-B", "-DskipTests", "clean", "package"],
+      "options": {
+        "cwd": "${workspaceFolder}/server",
+        "env": {
+          "JAVA_HOME": "D:\\Utilities\\Softwares\\jdk-26.0.1",
+          "PATH": "D:\\Utilities\\Softwares\\jdk-26.0.1\\bin;${env:PATH}"
+        }
+      },
+      "problemMatcher": "$tsc",
+      "group": "build"
+    },
+    {
+      "label": "backend: test (unit only)",
+      "type": "shell",
+      "command": "mvn",
+      "args": ["-B", "-Dtest=!*IT", "test"],
+      "options": {
+        "cwd": "${workspaceFolder}/server",
+        "env": {
+          "JAVA_HOME": "D:\\Utilities\\Softwares\\jdk-26.0.1",
+          "PATH": "D:\\Utilities\\Softwares\\jdk-26.0.1\\bin;${env:PATH}"
+        }
+      },
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "backend: verify (unit + IT + JaCoCo)",
+      "type": "shell",
+      "command": "mvn",
+      "args": ["-B", "verify"],
+      "options": {
+        "cwd": "${workspaceFolder}/server",
+        "env": {
+          "JAVA_HOME": "D:\\Utilities\\Softwares\\jdk-26.0.1",
+          "PATH": "D:\\Utilities\\Softwares\\jdk-26.0.1\\bin;${env:PATH}"
+        }
+      },
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "frontend: npm install",
+      "type": "shell",
+      "command": "npm",
+      "args": ["install", "--no-audit", "--no-fund"],
+      "options": { "cwd": "${workspaceFolder}/client/mockpit-ui" },
+      "problemMatcher": []
+    },
+    {
+      "label": "frontend: ng serve",
+      "type": "shell",
+      "command": "npx",
+      "args": ["ng", "serve", "--host", "0.0.0.0", "--port", "4200"],
+      "options": { "cwd": "${workspaceFolder}/client/mockpit-ui" },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "angular",
+        "pattern": [
+          {
+            "regexp": "^(.*?)$",
+            "file": 1,
+            "location": 1,
+            "message": 1
+          }
+        ],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "(?i).*(building|recompiling).*",
+          "endsPattern": "(?i)(application bundle generation complete|local:\\s+http|compiled successfully)"
+        }
+      },
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "frontend: ng test (headless, single run)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "test:ci"],
+      "options": { "cwd": "${workspaceFolder}/client/mockpit-ui" },
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "frontend: ng build (production)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "build-prod"],
+      "options": { "cwd": "${workspaceFolder}/client/mockpit-ui" },
+      "group": "build",
+      "problemMatcher": []
+    }
+  ]
+}

@@ -10,7 +10,8 @@ import { MockService } from 'src/app/services/mock.service';
   styleUrls: ['./home.component.scss'],
   host: {
     class: 'container'
-  }
+  },
+  standalone: false
 })
 export class HomeComponent{
 

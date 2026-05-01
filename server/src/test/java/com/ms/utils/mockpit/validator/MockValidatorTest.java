@@ -19,7 +19,7 @@ class MockValidatorTest {
         m.setName("ok");
         RouteDTO r = new RouteDTO();
         r.setPath("/foo");
-        r.setMethod(com.ms.utils.mockpit.enums.Method.GET);
+        r.setMethod(com.ms.utils.mockpit.enums.Method.GET.name());
         m.setRoute(r);
         ResponseBodyDTO rb = new ResponseBodyDTO();
         rb.setContentType("application/json");

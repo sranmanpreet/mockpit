@@ -14,7 +14,8 @@ import { needConfirmation } from '../shared/confirmation-dialog/confirmation-dia
   styleUrls: ['./new-mock.component.scss'],
   host: {
     class: "container"
-  }
+  },
+  standalone: false
 })
 export class NewMockComponent implements OnInit {
   mockForm!: FormGroup;

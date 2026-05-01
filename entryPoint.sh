@@ -21,6 +21,7 @@ JAVA_OPTS_DEFAULT="-XX:+UseContainerSupport \
     -XX:MaxRAMPercentage=75.0 \
     -XX:+ExitOnOutOfMemoryError \
     -Djava.security.egd=file:/dev/./urandom \
-    -Dfile.encoding=UTF-8"
+    -Dfile.encoding=UTF-8 \
+    --enable-native-access=ALL-UNNAMED"
 
 exec java ${JAVA_OPTS:-${JAVA_OPTS_DEFAULT}} -jar /app/mockpit-server.jar

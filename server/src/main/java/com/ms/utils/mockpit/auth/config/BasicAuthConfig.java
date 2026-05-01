@@ -16,8 +16,11 @@ public class BasicAuthConfig extends AuthConfig {
     private String username;
     /** Plaintext password supplied by the UI on save; never returned. */
     private String password;
-    /** BCrypt hash actually stored. Read by validators; never echoed to the wire. */
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    /**
+     * BCrypt hash actually stored on disk. {@code AuthConfigCodec#redactForResponse} blanks this
+     * before any UI-bound serialisation, so the hash never crosses the wire to the browser even
+     * though Jackson can read/write it for the JSON column.
+     */
     private String passwordHash;
     private String realm = "mockpit";
 

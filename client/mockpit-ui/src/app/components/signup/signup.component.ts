@@ -8,6 +8,7 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css'],
+  standalone: false
 })
 export class SignupComponent {
   loading = false;

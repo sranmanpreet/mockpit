@@ -4,10 +4,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.List;
 
@@ -160,11 +160,20 @@ public class MockpitProperties {
         @Min(100)
         private int readTimeoutMs = 5000;
         private List<String> allowedHosts = Collections.emptyList();
+        /**
+         * Test-only escape hatch. When true, {@code SafeHttpClient} permits requests to loopback
+         * addresses (127.0.0.0/8 and ::1). NEVER set this in production - it disables half of the
+         * SSRF defence.
+         */
+        private boolean allowLoopback = false;
+
         public int getConnectTimeoutMs() { return connectTimeoutMs; }
         public void setConnectTimeoutMs(int v) { this.connectTimeoutMs = v; }
         public int getReadTimeoutMs() { return readTimeoutMs; }
         public void setReadTimeoutMs(int v) { this.readTimeoutMs = v; }
         public List<String> getAllowedHosts() { return allowedHosts; }
         public void setAllowedHosts(List<String> v) { this.allowedHosts = v; }
+        public boolean isAllowLoopback() { return allowLoopback; }
+        public void setAllowLoopback(boolean allowLoopback) { this.allowLoopback = allowLoopback; }
     }
 }

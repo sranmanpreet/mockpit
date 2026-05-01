@@ -13,16 +13,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 11
+      - name: Set up JDK 26
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 11
+          java-version: 26
           cache: maven
 
       - name: Verify (unit + integration + JaCoCo)
         working-directory: server
-        run: ./mvnw -B verify
+        run: mvn -B verify
 
       - name: Upload coverage report
         if: always()
@@ -37,10 +37,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js 18
+      - name: Set up Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
           cache: npm
           cache-dependency-path: client/mockpit-ui/package-lock.json
 
@@ -66,16 +66,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 11
+      - name: Set up JDK 26
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 11
+          java-version: 26
           cache: maven
 
       - name: Server dependency-check
         working-directory: server
-        run: ./mvnw -B -Psecurity-scan verify -DskipTests
+        run: mvn -B -Psecurity-scan verify -DskipTests
         continue-on-error: true
 
       - name: npm audit (production)

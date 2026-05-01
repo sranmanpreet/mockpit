@@ -2,7 +2,7 @@ package com.ms.utils.mockpit;
 
 import org.junit.jupiter.api.Test;
 
-class MockpitApplicationTests extends AbstractIntegrationTest {
+class MockpitApplicationIT extends AbstractIntegrationTest {
 
     @Test
     void contextLoads() {

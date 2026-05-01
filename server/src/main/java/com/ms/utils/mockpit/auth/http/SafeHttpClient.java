@@ -88,8 +88,9 @@ public class SafeHttpClient {
         } catch (UnknownHostException ex) {
             throw new IOException("Unable to resolve host: " + host);
         }
+        boolean allowLoopback = properties.getHttpClient().isAllowLoopback();
         for (InetAddress addr : resolved) {
-            if (isUnsafeAddress(addr)) {
+            if (isUnsafeAddress(addr, allowLoopback)) {
                 throw new IOException("Host '" + host + "' resolves to a forbidden address: " + addr.getHostAddress());
             }
         }
@@ -138,9 +139,9 @@ public class SafeHttpClient {
         return out.toByteArray();
     }
 
-    private static boolean isUnsafeAddress(InetAddress addr) {
+    private static boolean isUnsafeAddress(InetAddress addr, boolean allowLoopback) {
         if (addr.isAnyLocalAddress()) return true;
-        if (addr.isLoopbackAddress()) return true;
+        if (addr.isLoopbackAddress() && !allowLoopback) return true;
         if (addr.isLinkLocalAddress()) return true;
         if (addr.isMulticastAddress()) return true;
         if (addr.isSiteLocalAddress()) return true; // RFC 1918 / IPv6 ULA

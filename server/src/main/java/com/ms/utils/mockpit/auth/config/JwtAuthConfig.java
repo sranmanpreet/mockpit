@@ -23,7 +23,7 @@ public class JwtAuthConfig extends AuthConfig {
 
     /** HMAC secret for HS* algorithms. */
     private String sharedSecret;
-    /** PEM-encoded public key for RS*/ES* algorithms. */
+    /** PEM-encoded public key for RS*&#47;ES* algorithms. */
     private String publicKeyPem;
     /** JWKS endpoint for OIDC-style key rotation. Mutually exclusive with {@link #publicKeyPem}. */
     private String jwksUri;

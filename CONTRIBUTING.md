@@ -70,8 +70,8 @@ Please follow [`SECURITY.md`](SECURITY.md) — do **not** open a public issue fo
 ## Project structure
 
 ```
-client/                 # Angular 15 SPA
-server/                 # Spring Boot 2.7.18 backend
+client/                 # Angular 21 SPA (esbuild builder, Karma/Jasmine)
+server/                 # Spring Boot 3.5.14 backend (Java 21 bytecode, JDK 26 runtime)
 db/                     # Database initialisation scripts
 documentation/          # User-facing docs and screenshots
 docker-compose.yml      # Quickstart compose

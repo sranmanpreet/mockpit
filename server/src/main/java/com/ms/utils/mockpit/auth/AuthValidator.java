@@ -3,7 +3,7 @@ package com.ms.utils.mockpit.auth;
 import com.ms.utils.mockpit.auth.config.AuthConfig;
 import com.ms.utils.mockpit.domain.AuthType;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Validates a single inbound mock request against the user-configured auth scheme. Implementations

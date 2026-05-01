@@ -5,7 +5,8 @@ import { ConfirmationDialogData } from '../confirmation-dialog-data';
 @Component({
   selector: 'app-confirm-dialog',
   templateUrl: './confirmation-dialog.component.html',
-  styleUrls: ['./confirmation-dialog.component.scss']
+  styleUrls: ['./confirmation-dialog.component.scss'],
+  standalone: false
 })
 export class ConfirmationDialogComponent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: ConfirmationDialogData, public matDialog: MatDialog) { }

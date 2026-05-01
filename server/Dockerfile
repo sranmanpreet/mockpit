@@ -1,11 +1,12 @@
-# syntax=docker/dockerfile:1.6
-# Multi-stage build for the Mockpit server. The runtime image is distroless-ish - a small
-# Eclipse Temurin JRE image running as a non-root user with a healthcheck against /actuator/health.
+# syntax=docker/dockerfile:1.7
+# Multi-stage build for the Mockpit server. Build runs on Maven 3.9 / Eclipse Temurin 21 (the
+# bytecode target), runtime image is the JDK 26 Temurin image to match what the user has
+# installed locally and to take advantage of the latest GC + JIT improvements.
 
 ############################
 # 1. Maven build
 ############################
-FROM maven:3.9.6-eclipse-temurin-11 AS build
+FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /workspace
 
 COPY pom.xml ./
@@ -18,10 +19,10 @@ RUN mvn -B -q -DskipTests package \
 ############################
 # 2. Runtime
 ############################
-FROM eclipse-temurin:11-jre-jammy
+FROM eclipse-temurin:26-jre-noble
 
 ENV LANG=C.UTF-8 \
-    JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError -Djava.security.egd=file:/dev/./urandom"
+    JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError -Djava.security.egd=file:/dev/./urandom --enable-native-access=ALL-UNNAMED"
 
 RUN groupadd --system mockpit \
     && useradd --system --gid mockpit --home /app --shell /usr/sbin/nologin mockpit \

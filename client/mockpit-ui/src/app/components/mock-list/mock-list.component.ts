@@ -19,7 +19,8 @@ import { needConfirmation } from '../shared/confirmation-dialog/confirmation-dia
   styleUrls: ['./mock-list.component.scss'],
   host: {
     class: "container"
-  }
+  },
+  standalone: false
 })
 export class MockListComponent implements OnInit, OnDestroy, AfterViewInit {
   mocks$: Subject<Mock[]> = new Subject<Mock[]>();

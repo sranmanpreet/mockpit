@@ -1,6 +1,6 @@
 package com.ms.utils.mockpit.domain;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "response_status")

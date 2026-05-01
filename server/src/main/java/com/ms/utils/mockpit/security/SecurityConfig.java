@@ -1,6 +1,5 @@
 package com.ms.utils.mockpit.security;
 
-import com.ms.utils.mockpit.config.MockpitProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -44,9 +44,6 @@ public class SecurityConfig {
 
     @Autowired
     private CorsConfigurationSource corsConfigurationSource;
-
-    @Autowired
-    private MockpitProperties properties;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -82,7 +79,7 @@ public class SecurityConfig {
     public SecurityFilterChain adminChain(HttpSecurity http) throws Exception {
         // Restrict this chain to the admin/auth surface so the LiveResource catch-all is handled
         // by the permissive chain below.
-        http.requestMatcher(new OrRequestMatcher(
+        http.securityMatcher(new OrRequestMatcher(
                 new AntPathRequestMatcher("/native/**"),
                 new AntPathRequestMatcher("/auth/**"),
                 new AntPathRequestMatcher("/actuator/**"),
@@ -93,13 +90,19 @@ public class SecurityConfig {
 
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
-                .csrf(csrf -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .csrf(csrf -> {
+                    // Spring Security 6 defaults to XorCsrfTokenRequestAttributeHandler which would
+                    // break Angular's HttpClientXsrfModule (it expects the cookie value to match the
+                    // header value verbatim). Use the plain handler instead.
+                    CsrfTokenRequestAttributeHandler handler = new CsrfTokenRequestAttributeHandler();
+                    handler.setCsrfRequestAttributeName(null);
+                    csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRequestHandler(handler)
                         .ignoringRequestMatchers(
                                 new AntPathRequestMatcher("/auth/login"),
                                 new AntPathRequestMatcher("/auth/signup"),
-                                new AntPathRequestMatcher("/auth/password-reset/**"))
-                )
+                                new AntPathRequestMatcher("/auth/password-reset/**"));
+                })
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -109,9 +112,9 @@ public class SecurityConfig {
                 .addFilterBefore(jwtCookieFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(publicMatchers()).permitAll()
-                        .antMatchers(HttpMethod.GET, "/actuator/prometheus").hasRole("ADMIN")
-                        .antMatchers("/native/**").authenticated()
-                        .antMatchers("/auth/me", "/auth/refresh").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/actuator/prometheus").hasRole("ADMIN")
+                        .requestMatchers("/native/**").authenticated()
+                        .requestMatchers("/auth/me", "/auth/refresh").authenticated()
                         .anyRequest().authenticated());
 
         return http.build();

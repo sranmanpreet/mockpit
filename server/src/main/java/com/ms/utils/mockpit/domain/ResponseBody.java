@@ -3,7 +3,7 @@ package com.ms.utils.mockpit.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.http.MediaType;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "response_body")

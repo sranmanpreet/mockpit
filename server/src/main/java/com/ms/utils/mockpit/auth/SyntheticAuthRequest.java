@@ -1,18 +1,22 @@
 package com.ms.utils.mockpit.auth;
 
-import javax.servlet.AsyncContext;
-import javax.servlet.DispatcherType;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletInputStream;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpUpgradeHandler;
-import javax.servlet.http.Part;
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletConnection;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletMapping;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpUpgradeHandler;
+import jakarta.servlet.http.MappingMatch;
+import jakarta.servlet.http.Part;
+import jakarta.servlet.http.PushBuilder;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.security.Principal;
@@ -27,7 +31,9 @@ import java.util.Map;
  * Minimal {@link HttpServletRequest} implementation used by
  * {@code MockResource#testAuth} to feed a synthetic request into an {@link AuthValidator} without
  * pulling spring-test (which is test scope only) into the runtime classpath. Only the methods
- * actually called by validators are implemented; everything else throws.
+ * actually called by validators are implemented; everything else is a safe no-op.
+ *
+ * <p>Targets the Servlet 6.0 API (Jakarta EE 10).
  */
 public class SyntheticAuthRequest implements HttpServletRequest {
 
@@ -38,7 +44,9 @@ public class SyntheticAuthRequest implements HttpServletRequest {
     public SyntheticAuthRequest(String method, String uri, Map<String, String> headers) {
         this.method = method == null ? "GET" : method;
         this.uri = uri == null ? "/" : uri;
-        if (headers != null) headers.forEach((k, v) -> { if (k != null && v != null) this.headers.put(k, v); });
+        if (headers != null) {
+            headers.forEach((k, v) -> { if (k != null && v != null) this.headers.put(k, v); });
+        }
     }
 
     @Override public String getHeader(String name) {
@@ -78,7 +86,6 @@ public class SyntheticAuthRequest implements HttpServletRequest {
     @Override public boolean isRequestedSessionIdValid() { return false; }
     @Override public boolean isRequestedSessionIdFromCookie() { return false; }
     @Override public boolean isRequestedSessionIdFromURL() { return false; }
-    @Override public boolean isRequestedSessionIdFromUrl() { return false; }
     @Override public boolean authenticate(HttpServletResponse response) { return false; }
     @Override public void login(String username, String password) { }
     @Override public void logout() { }
@@ -110,7 +117,6 @@ public class SyntheticAuthRequest implements HttpServletRequest {
     @Override public Enumeration<Locale> getLocales() { return Collections.enumeration(Collections.singletonList(Locale.getDefault())); }
     @Override public boolean isSecure() { return false; }
     @Override public RequestDispatcher getRequestDispatcher(String path) { return null; }
-    @Override public String getRealPath(String path) { return null; }
     @Override public int getRemotePort() { return 0; }
     @Override public String getLocalName() { return null; }
     @Override public String getLocalAddr() { return null; }
@@ -122,4 +128,25 @@ public class SyntheticAuthRequest implements HttpServletRequest {
     @Override public boolean isAsyncSupported() { return false; }
     @Override public AsyncContext getAsyncContext() { return null; }
     @Override public DispatcherType getDispatcherType() { return DispatcherType.REQUEST; }
+
+    // ---------- Servlet 6.0 additions ----------
+    @Override public String getRequestId() { return ""; }
+    @Override public String getProtocolRequestId() { return ""; }
+    @Override public ServletConnection getServletConnection() {
+        return new ServletConnection() {
+            @Override public String getConnectionId() { return ""; }
+            @Override public String getProtocol() { return "HTTP/1.1"; }
+            @Override public String getProtocolConnectionId() { return ""; }
+            @Override public boolean isSecure() { return false; }
+        };
+    }
+    @Override public PushBuilder newPushBuilder() { return null; }
+    @Override public HttpServletMapping getHttpServletMapping() {
+        return new HttpServletMapping() {
+            @Override public String getMatchValue() { return ""; }
+            @Override public String getPattern() { return ""; }
+            @Override public String getServletName() { return ""; }
+            @Override public MappingMatch getMappingMatch() { return MappingMatch.DEFAULT; }
+        };
+    }
 }

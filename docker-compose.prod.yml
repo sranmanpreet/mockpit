@@ -23,7 +23,7 @@ services:
     build:
       context: .
       dockerfile: server/Dockerfile
-    image: mockpit/server:2.0.0
+    image: mockpit/server:2.1.0
     <<: *restart_policy
     depends_on:
       db:
@@ -58,7 +58,7 @@ services:
     build:
       context: .
       dockerfile: client/mockpit-ui/Dockerfile
-    image: mockpit/client:2.0.0
+    image: mockpit/client:2.1.0
     <<: *restart_policy
     environment:
       backendUrl: ${PUBLIC_BACKEND_URL:?PUBLIC_BACKEND_URL is required}
@@ -68,7 +68,7 @@ services:
       - mockpit-server
 
   db:
-    image: postgres:15-alpine
+    image: postgres:18-alpine
     <<: *restart_policy
     environment:
       POSTGRES_DB: mockpitdb

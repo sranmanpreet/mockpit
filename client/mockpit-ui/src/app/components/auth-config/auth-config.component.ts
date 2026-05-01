@@ -18,6 +18,7 @@ interface AuthConfigOutput {
   selector: 'app-auth-config',
   templateUrl: './auth-config.component.html',
   styleUrls: ['./auth-config.component.css'],
+  standalone: false
 })
 export class AuthConfigComponent implements OnChanges {
   @Input() authConfig: AuthConfig = { type: 'NONE' };

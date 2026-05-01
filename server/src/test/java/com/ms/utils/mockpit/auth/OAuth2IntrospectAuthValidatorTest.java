@@ -42,6 +42,8 @@ class OAuth2IntrospectAuthValidatorTest {
         wireMock.resetAll();
         props = new MockpitProperties();
         props.getHttpClient().setAllowedHosts(List.of("localhost"));
+        // Tests need to talk to WireMock-on-localhost; production blocks loopback.
+        props.getHttpClient().setAllowLoopback(true);
         SafeHttpClient httpClient = new SafeHttpClient();
         ReflectionTestUtils.setField(httpClient, "properties", props);
         validator = new OAuth2IntrospectAuthValidator();

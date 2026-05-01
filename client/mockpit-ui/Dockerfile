@@ -1,11 +1,11 @@
-# syntax=docker/dockerfile:1.6
-# Multi-stage build for the Mockpit Angular client. Build is done with a pinned Node 18 image
-# so we get current security patches; runtime is nginx-alpine with non-root user.
+# syntax=docker/dockerfile:1.7
+# Multi-stage build for the Mockpit Angular client. Build is done with a pinned Node 22 LTS image
+# (matches the local toolchain on the dev machine - 22.22.0); runtime is nginx-alpine with non-root user.
 
 ############################
 # 1. Build
 ############################
-FROM node:18.20.4-alpine AS build
+FROM node:22-alpine AS build
 WORKDIR /workspace
 
 COPY package.json package-lock.json* ./

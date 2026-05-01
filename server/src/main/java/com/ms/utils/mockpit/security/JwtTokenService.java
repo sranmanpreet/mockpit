@@ -5,12 +5,11 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -48,23 +47,23 @@ public class JwtTokenService {
         Instant now = Instant.now();
         Instant exp = now.plusSeconds(properties.getSecurity().getJwt().getAccessTokenTtlSeconds());
         return Jwts.builder()
-                .setIssuer(properties.getSecurity().getJwt().getIssuer())
-                .setSubject(String.valueOf(userId))
+                .issuer(properties.getSecurity().getJwt().getIssuer())
+                .subject(String.valueOf(userId))
                 .claim("email", email)
                 .claim(CLAIM_ROLE, role)
-                .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(exp))
-                .signWith(signingKey, SignatureAlgorithm.HS256)
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(exp))
+                .signWith(signingKey, Jwts.SIG.HS256)
                 .compact();
     }
 
     public ParsedToken parse(String token) throws JwtException {
-        Jws<Claims> jws = Jwts.parserBuilder()
+        Jws<Claims> jws = Jwts.parser()
                 .requireIssuer(properties.getSecurity().getJwt().getIssuer())
-                .setSigningKey(signingKey)
+                .verifyWith(signingKey)
                 .build()
-                .parseClaimsJws(token);
-        Claims body = jws.getBody();
+                .parseSignedClaims(token);
+        Claims body = jws.getPayload();
         return new ParsedToken(
                 Long.parseLong(body.getSubject()),
                 String.valueOf(body.get("email")),

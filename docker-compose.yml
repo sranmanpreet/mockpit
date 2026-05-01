@@ -6,7 +6,7 @@ version: "3.9"
 services:
   mockpit-server:
     container_name: mockpit-server
-    image: sranmanpreet/mockpit-server:2.0.0-RELEASE
+    image: sranmanpreet/mockpit-server:2.1.0-RELEASE
     ports:
       - "8080:8080"
     depends_on:
@@ -28,7 +28,7 @@ services:
 
   mockpit-client:
     container_name: mockpit-client
-    image: sranmanpreet/mockpit-client:2.0.0-RELEASE
+    image: sranmanpreet/mockpit-client:2.1.0-RELEASE
     environment:
       backendUrl: http://localhost:8080
     ports:
@@ -39,7 +39,7 @@ services:
 
   db:
     container_name: mockpit-db
-    image: postgres:15-alpine
+    image: postgres:18-alpine
     ports:
       - "5432:5432"
     environment:

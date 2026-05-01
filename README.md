@@ -1,9 +1,11 @@
 # Mockpit
 
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-![Spring Boot](https://img.shields.io/badge/spring--boot-2.7.18-6db33f)
-![Angular](https://img.shields.io/badge/angular-15-dd0031)
-![Postgres](https://img.shields.io/badge/postgres-15-336791)
+![Spring Boot](https://img.shields.io/badge/spring--boot-3.5.14-6db33f)
+![Java](https://img.shields.io/badge/java-21%20%2F%2026-007396)
+![Angular](https://img.shields.io/badge/angular-21-dd0031)
+![Node](https://img.shields.io/badge/node-22-339933)
+![Postgres](https://img.shields.io/badge/postgres-18-336791)
 
 Mockpit is a self-hosted, multi-tenant mock REST API server. Define endpoints in a friendly UI,
 return static or fully dynamic JavaScript-evaluated responses, and protect them with the
@@ -75,7 +77,7 @@ That brings up:
 
 - `mockpit-server` (Spring Boot) on `http://localhost:8080`
 - `mockpit-client` (Angular SPA) on `http://localhost:4200`
-- `mockpit-db` (Postgres 15) on `localhost:5432`
+- `mockpit-db` (Postgres 18) on `localhost:5432`
 
 A bootstrap admin account is seeded on first run with the credentials in `docker-compose.yml`
 (`admin@mockpit.local` / `ChangeMeNow123!`). Sign in, change the password immediately, and you
@@ -172,7 +174,7 @@ ones (and their `application.yml` keys):
 
 ## Development
 
-Backend (Spring Boot 2.7.18 / Java 11):
+Backend (Spring Boot 3.5.14 / Java 21 source-target, runs on JDK 26):
 
 ```bash
 cd server
@@ -183,7 +185,7 @@ cd server
 ./mvnw -Psecurity-scan verify   # adds OWASP dependency-check
 ```
 
-Frontend (Angular 15 / Node 18):
+Frontend (Angular 21 / Node 22):
 
 ```bash
 cd client/mockpit-ui

@@ -1,10 +1,8 @@
 package com.ms.utils.mockpit.dto;
 
-import org.springframework.http.HttpMethod;
-
 public class RouteDTO {
     private String path;
-    private HttpMethod method;
+    private String method;
 
     public String getPath() {
         return path;
@@ -14,11 +12,11 @@ public class RouteDTO {
         this.path = path;
     }
 
-    public HttpMethod getMethod() {
+    public String getMethod() {
         return method;
     }
 
-    public void setMethod(HttpMethod method) {
+    public void setMethod(String method) {
         this.method = method;
     }
 }

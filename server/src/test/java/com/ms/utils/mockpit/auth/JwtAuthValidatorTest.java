@@ -118,9 +118,14 @@ class JwtAuthValidatorTest {
         cfg.setAlgorithm("HS256");
         cfg.setSharedSecret(SECRET);
         String token = issueHs256("iss", "api", Instant.now().plusSeconds(60), null);
-        // Flip last char of signature.
-        String tampered = token.substring(0, token.length() - 1)
-                + (token.charAt(token.length() - 1) == 'A' ? 'B' : 'A');
+        // Flip a character mid-signature; flipping the trailing base64url char alone may
+        // be a no-op for HMAC-SHA256 because the last 2 bits are padding and lenient
+        // base64url decoders (e.g. JJWT 0.12) treat 'A' and 'B' as the same byte sequence.
+        int dotIdx = token.lastIndexOf('.');
+        int mid = dotIdx + 1 + ((token.length() - dotIdx - 1) / 2);
+        char c = token.charAt(mid);
+        char swapped = c == 'A' ? 'b' : 'A';
+        String tampered = token.substring(0, mid) + swapped + token.substring(mid + 1);
         AuthValidationResult r = validator.validate(req("Bearer " + tampered), cfg);
         assertThat(r.isFailure()).isTrue();
     }

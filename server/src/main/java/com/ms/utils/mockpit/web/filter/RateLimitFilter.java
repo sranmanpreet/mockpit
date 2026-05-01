@@ -5,18 +5,16 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.ms.utils.mockpit.config.MockpitProperties;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
-import io.github.bucket4j.Bucket4j;
-import io.github.bucket4j.Refill;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicReference;
@@ -62,8 +60,8 @@ public class RateLimitFilter extends OncePerRequestFilter {
         String key = clientIp(request);
         boolean isAdmin = isAdminPath(request.getRequestURI());
         Bucket bucket = isAdmin
-                ? adminBuckets.get(key, k -> Bucket4j.builder().addLimit(adminBandwidth()).build())
-                : liveBuckets.get(key, k -> Bucket4j.builder().addLimit(liveBandwidth()).build());
+                ? adminBuckets.get(key, k -> Bucket.builder().addLimit(adminBandwidth()).build())
+                : liveBuckets.get(key, k -> Bucket.builder().addLimit(liveBandwidth()).build());
 
         if (bucket.tryConsume(1)) {
             chain.doFilter(request, response);
@@ -78,8 +76,11 @@ public class RateLimitFilter extends OncePerRequestFilter {
     private Bandwidth adminBandwidth() {
         Bandwidth b = adminBandwidth.get();
         if (b == null) {
-            b = Bandwidth.classic(properties.getRatelimit().getAdminRequestsPerMinute(),
-                    Refill.intervally(properties.getRatelimit().getAdminRequestsPerMinute(), Duration.ofMinutes(1)));
+            long quota = properties.getRatelimit().getAdminRequestsPerMinute();
+            b = Bandwidth.builder()
+                    .capacity(quota)
+                    .refillIntervally(quota, Duration.ofMinutes(1))
+                    .build();
             adminBandwidth.set(b);
         }
         return b;
@@ -88,8 +89,11 @@ public class RateLimitFilter extends OncePerRequestFilter {
     private Bandwidth liveBandwidth() {
         Bandwidth b = liveBandwidth.get();
         if (b == null) {
-            b = Bandwidth.classic(properties.getRatelimit().getLiveRequestsPerMinute(),
-                    Refill.intervally(properties.getRatelimit().getLiveRequestsPerMinute(), Duration.ofMinutes(1)));
+            long quota = properties.getRatelimit().getLiveRequestsPerMinute();
+            b = Bandwidth.builder()
+                    .capacity(quota)
+                    .refillIntervally(quota, Duration.ofMinutes(1))
+                    .build();
             liveBandwidth.set(b);
         }
         return b;

@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.6
+# syntax=docker/dockerfile:1.7
 # Combined image: builds both the Angular client and the Spring Boot server in two parallel stages
 # and packages them behind nginx. Useful for single-container quickstart deployments. For real
 # production prefer the per-component images (server/Dockerfile + client/.../Dockerfile) so each
@@ -7,7 +7,7 @@
 ############################
 # 1. Server build
 ############################
-FROM maven:3.9.6-eclipse-temurin-11 AS server-build
+FROM maven:3.9-eclipse-temurin-21 AS server-build
 WORKDIR /server
 COPY server/pom.xml ./
 RUN mvn -B -q -DskipTests dependency:go-offline
@@ -18,7 +18,7 @@ RUN mvn -B -q -DskipTests package \
 ############################
 # 2. Client build
 ############################
-FROM node:18.20.4-alpine AS client-build
+FROM node:22-alpine AS client-build
 WORKDIR /client
 COPY client/mockpit-ui/package.json client/mockpit-ui/package-lock.json* ./
 RUN npm ci
@@ -28,10 +28,10 @@ RUN npm run build -- --configuration=production --output-path=/client/dist
 ############################
 # 3. Runtime
 ############################
-FROM eclipse-temurin:11-jre-jammy
+FROM eclipse-temurin:26-jre-noble
 
 ENV LANG=C.UTF-8 \
-    JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=70.0 -XX:+ExitOnOutOfMemoryError"
+    JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=70.0 -XX:+ExitOnOutOfMemoryError --enable-native-access=ALL-UNNAMED"
 
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
