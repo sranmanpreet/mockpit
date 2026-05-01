@@ -1,24 +1,62 @@
-# Use the nginx image as the base
-FROM nginx:alpine
+# syntax=docker/dockerfile:1.6
+# Combined image: builds both the Angular client and the Spring Boot server in two parallel stages
+# and packages them behind nginx. Useful for single-container quickstart deployments. For real
+# production prefer the per-component images (server/Dockerfile + client/.../Dockerfile) so each
+# can scale independently.
 
-# Copy the nginx.conf file to the container
+############################
+# 1. Server build
+############################
+FROM maven:3.9.6-eclipse-temurin-11 AS server-build
+WORKDIR /server
+COPY server/pom.xml ./
+RUN mvn -B -q -DskipTests dependency:go-offline
+COPY server/src ./src
+RUN mvn -B -q -DskipTests package \
+    && mv target/mockpit-*.jar target/mockpit-server.jar
+
+############################
+# 2. Client build
+############################
+FROM node:18.20.4-alpine AS client-build
+WORKDIR /client
+COPY client/mockpit-ui/package.json client/mockpit-ui/package-lock.json* ./
+RUN npm ci
+COPY client/mockpit-ui/. .
+RUN npm run build -- --configuration=production --output-path=/client/dist
+
+############################
+# 3. Runtime
+############################
+FROM eclipse-temurin:11-jre-jammy
+
+ENV LANG=C.UTF-8 \
+    JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=70.0 -XX:+ExitOnOutOfMemoryError"
+
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        nginx gettext-base wget ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd --system mockpit \
+    && useradd --system --gid mockpit --home /app --shell /usr/sbin/nologin mockpit
+
+WORKDIR /app
+
+COPY --from=server-build /server/target/mockpit-server.jar /app/mockpit-server.jar
+COPY --from=client-build /client/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf
+COPY entryPoint.sh /entryPoint.sh
 
-# Copy the built frontend and backend images to the nginx directory
-COPY --from=sranmanpreet/mockpit-client:1.1.0-RELEASE /usr/share/nginx/html /usr/share/nginx/html/
-COPY ./entryPoint.sh /
-COPY --from=sranmanpreet/mockpit-server:1.1.0-RELEASE /app/mockpit.jar /app/mockpit-server.jar
+RUN chmod +x /entryPoint.sh \
+    && chown -R mockpit:mockpit /app /usr/share/nginx/html /var/log/nginx /var/lib/nginx \
+    && mkdir -p /run/nginx \
+    && chown -R mockpit:mockpit /run/nginx
 
-EXPOSE 80
+USER mockpit
 
-# Install OpenJDK and other necessary packages
-RUN apk update && apk add openjdk11
+EXPOSE 80 8080
 
-# Set up environment variables
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk
-ENV PATH="$JAVA_HOME/bin:${PATH}"
+HEALTHCHECK --interval=30s --timeout=5s --start-period=45s --retries=3 \
+    CMD wget -q --spider http://localhost:8080/actuator/health || exit 1
 
-# Start Nginx and Spring Boot app
-RUN chmod +x entryPoint.sh
-ENTRYPOINT ["sh","/entryPoint.sh"]
-#CMD nginx && java -jar /app/mockpit-server.jar
+ENTRYPOINT ["/entryPoint.sh"]

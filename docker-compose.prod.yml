@@ -1,0 +1,105 @@
+# Production-shaped docker-compose. Builds the server and client locally so you control the
+# image contents, sets resource limits, restart policies, and exposes the SPA + API behind nginx
+# (terminate TLS upstream or wire in nginx.prod.conf with Let's Encrypt).
+#
+# Required env vars (no defaults - the stack will fail to start until they are present):
+#   POSTGRES_USER, POSTGRES_PASSWORD
+#   MOCKPIT_JWT_SECRET           >= 32 bytes of random data
+#   MOCKPIT_SECRET_CIPHER_KEY    base64(32 random bytes)
+#   MOCKPIT_ALLOWED_ORIGINS      comma-separated list of accepted SPA origins
+#   MOCKPIT_BOOTSTRAP_ADMIN_*    optional first-run admin seed (recommended for fresh deployments)
+#
+# Generate strong values with:
+#   openssl rand -base64 48 > .secret-jwt
+#   openssl rand 32 | base64 > .secret-cipher
+
+version: "3.9"
+
+x-restart: &restart_policy
+  restart: unless-stopped
+
+services:
+  mockpit-server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    image: mockpit/server:2.0.0
+    <<: *restart_policy
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/mockpitdb
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:?POSTGRES_USER is required}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      MOCKPIT_JWT_SECRET: ${MOCKPIT_JWT_SECRET:?MOCKPIT_JWT_SECRET is required}
+      MOCKPIT_SECRET_CIPHER_KEY: ${MOCKPIT_SECRET_CIPHER_KEY:?MOCKPIT_SECRET_CIPHER_KEY is required}
+      MOCKPIT_ALLOWED_ORIGINS: ${MOCKPIT_ALLOWED_ORIGINS:?MOCKPIT_ALLOWED_ORIGINS is required}
+      MOCKPIT_COOKIE_SECURE: "true"
+      MOCKPIT_BOOTSTRAP_ADMIN_ENABLED: ${MOCKPIT_BOOTSTRAP_ADMIN_ENABLED:-false}
+      MOCKPIT_BOOTSTRAP_ADMIN_EMAIL: ${MOCKPIT_BOOTSTRAP_ADMIN_EMAIL:-}
+      MOCKPIT_BOOTSTRAP_ADMIN_PASSWORD: ${MOCKPIT_BOOTSTRAP_ADMIN_PASSWORD:-}
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 768M
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+  mockpit-client:
+    build:
+      context: .
+      dockerfile: client/mockpit-ui/Dockerfile
+    image: mockpit/client:2.0.0
+    <<: *restart_policy
+    environment:
+      backendUrl: ${PUBLIC_BACKEND_URL:?PUBLIC_BACKEND_URL is required}
+    expose:
+      - "80"
+    depends_on:
+      - mockpit-server
+
+  db:
+    image: postgres:15-alpine
+    <<: *restart_policy
+    environment:
+      POSTGRES_DB: mockpitdb
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    volumes:
+      - mockpitpgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d mockpitdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1G
+
+  nginx:
+    image: nginx:1.27-alpine
+    <<: *restart_policy
+    depends_on:
+      - mockpit-server
+      - mockpit-client
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - letsencrypt:/etc/letsencrypt:ro
+
+volumes:
+  mockpitpgdata:
+  letsencrypt:

@@ -1,0 +1,38 @@
+spring:
+  liquibase:
+    change-log: classpath:liquibase/master.xml
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+mockpit:
+  cors:
+    allowed-origins:
+      - http://localhost:4200
+  security:
+    jwt:
+      secret: test-jwt-secret-must-be-at-least-32-chars-long-padding-padding
+      issuer: mockpit-test
+      access-token-ttl-seconds: 60
+      refresh-token-ttl-seconds: 600
+      cookie-name: mockpit_session
+    secret-cipher-key: "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="
+    bootstrap-admin:
+      enabled: false
+  ratelimit:
+    enabled: false
+  js-sandbox:
+    timeout-ms: 500
+    max-statements: 50000
+    max-output-bytes: 65536
+  http-client:
+    connect-timeout-ms: 1500
+    read-timeout-ms: 1500
+    allowed-hosts:
+      - localhost
+      - 127.0.0.1

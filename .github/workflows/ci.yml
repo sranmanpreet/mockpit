@@ -1,0 +1,110 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  server:
+    name: Server (Maven + JaCoCo)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 11
+          cache: maven
+
+      - name: Verify (unit + integration + JaCoCo)
+        working-directory: server
+        run: ./mvnw -B verify
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: server/target/site/jacoco
+
+  client:
+    name: Client (Karma + Jasmine)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: client/mockpit-ui/package-lock.json
+
+      - name: Install dependencies
+        working-directory: client/mockpit-ui
+        run: npm ci
+
+      - name: Test
+        working-directory: client/mockpit-ui
+        run: npm run test:ci
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-coverage
+          path: client/mockpit-ui/coverage
+
+  security-scan:
+    name: OWASP Dependency-Check + npm audit
+    runs-on: ubuntu-latest
+    needs: [server, client]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 11
+          cache: maven
+
+      - name: Server dependency-check
+        working-directory: server
+        run: ./mvnw -B -Psecurity-scan verify -DskipTests
+        continue-on-error: true
+
+      - name: npm audit (production)
+        working-directory: client/mockpit-ui
+        run: npm audit --audit-level=high --omit=dev
+        continue-on-error: true
+
+  docker:
+    name: Build Docker images
+    runs-on: ubuntu-latest
+    needs: [server, client]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build server image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: server/Dockerfile
+          push: false
+          tags: mockpit/server:ci
+
+      - name: Build client image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: client/mockpit-ui/Dockerfile
+          push: false
+          tags: mockpit/client:ci

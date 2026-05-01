@@ -3,6 +3,7 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Mock, MockResponse, ResponseHeader } from 'src/app/models/mock/mock.model';
+import { AuthConfig, AuthFailureResponse } from 'src/app/models/auth-config.model';
 import { ConfigService } from 'src/app/services/config.service';
 import { MockService } from 'src/app/services/mock.service';
 import { needConfirmation } from '../shared/confirmation-dialog/confirmation-dialog.decorator';
@@ -19,6 +20,9 @@ export class NewMockComponent implements OnInit {
   mockForm!: FormGroup;
 
   errorMessage?: string;
+
+  authConfig: AuthConfig = { type: 'NONE' };
+  authFailure?: AuthFailureResponse;
 
   constructor(private route: ActivatedRoute, private router: Router, private mockService: MockService, private toast: ToastrService, public configService: ConfigService) {
   }
@@ -47,10 +51,22 @@ export class NewMockComponent implements OnInit {
       }),
       'inactive': new FormControl(null)
     });
+    this.authConfig = { type: 'NONE' };
+    this.authFailure = undefined;
+  }
+
+  onAuthChange(payload: { authConfig: AuthConfig; authFailure?: AuthFailureResponse }) {
+    this.authConfig = payload.authConfig;
+    this.authFailure = payload.authFailure;
   }
 
   onSubmit() {
-    this.mockService.saveMock(this.mockForm.value).subscribe(
+    const payload: Mock = {
+      ...this.mockForm.value,
+      authConfig: this.authConfig,
+      authFailure: this.authFailure,
+    };
+    this.mockService.saveMock(payload).subscribe(
       (response: MockResponse) => {
         this.router.navigate(['/mock/'+response.data.id]);
         this.toast.success("Mock saved", "Success");

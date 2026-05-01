@@ -59,4 +59,8 @@ export class MockService {
     return this.http.get(this.backendUrl +'/native/api/mocks/search?query='+query, options) as Observable<MockResponse>;
   }
 
+  public testAuth(id: number | string, sample: { headers: { [k: string]: string } }) {
+    return this.http.post(this.backendUrl + `/native/api/mocks/${id}/auth/test`, sample);
+  }
+
 }

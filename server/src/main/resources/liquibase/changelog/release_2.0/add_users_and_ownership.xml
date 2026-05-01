@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="r2.0-create-users-table" author="mockpit">
+        <createTable tableName="app_user">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="email" type="varchar(320)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="ux_app_user_email"/>
+            </column>
+            <column name="password_hash" type="varchar(120)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="display_name" type="varchar(120)"/>
+            <column name="role" type="varchar(32)" defaultValue="USER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="enabled" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email_verified" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="failed_login_attempts" type="int" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="locked_until" type="timestamp"/>
+            <column name="last_login_at" type="timestamp"/>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="r2.0-create-password-reset-token" author="mockpit">
+        <createTable tableName="password_reset_token">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_prt_user" references="app_user(id)"/>
+            </column>
+            <column name="token_hash" type="varchar(128)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="ux_prt_token_hash"/>
+            </column>
+            <column name="expires_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="used_at" type="timestamp"/>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="r2.0-add-mock-owner" author="mockpit">
+        <addColumn tableName="mock">
+            <column name="user_id" type="bigint">
+                <!-- nullable to keep pre-2.0 mocks reachable as "system" mocks until migrated -->
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="mock" baseColumnNames="user_id"
+                                 constraintName="fk_mock_user"
+                                 referencedTableName="app_user" referencedColumnNames="id"
+                                 onDelete="SET NULL"/>
+        <createIndex tableName="mock" indexName="ix_mock_user_id">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="r2.0-add-mock-auth-columns" author="mockpit">
+        <addColumn tableName="mock">
+            <column name="auth_type" type="varchar(32)" defaultValue="NONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="auth_config_json" type="text"/>
+            <column name="auth_failure_status" type="int"/>
+            <column name="auth_failure_body" type="text"/>
+            <column name="auth_failure_content_type" type="varchar(120)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="r2.0-route-method-index" author="mockpit">
+        <createIndex tableName="route" indexName="ix_route_path_method">
+            <column name="path"/>
+            <column name="method"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

@@ -28,5 +28,16 @@ export class ConfigService {
   getConfig(): any {
     return this.config;
   }
+
+  getBackendUrl(): string {
+    if (!this.config || !this.config.backendUrl) {
+      return '';
+    }
+    let url: string = this.config.backendUrl;
+    while (url.endsWith('/')) {
+      url = url.substring(0, url.length - 1);
+    }
+    return url;
+  }
 }
 	

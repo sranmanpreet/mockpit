@@ -111,6 +111,11 @@
                 </div>
             </div>
         </div>
+        <app-auth-config
+            [authConfig]="authConfig"
+            [authFailure]="authFailure"
+            (configChange)="onAuthChange($event)">
+        </app-auth-config>
         <div class="actions flex space-x-6">
             <button type="submit" class="google-button blue h-min">Save</button>
             <button type="button" class="google-button grey h-min" (click)="onCancel()">Cancel</button>

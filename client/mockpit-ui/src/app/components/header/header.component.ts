@@ -1,21 +1,29 @@
-import { DomSanitizer } from '@angular/platform-browser';
-import { Component, Input, ViewChild } from '@angular/core';
-import { Renderer2 } from '@angular/core'
-
-import { ToastrService } from 'ngx-toastr';
-
-import { MockService } from 'src/app/services/mock.service';
-import { HttpResponse } from '@angular/common/http';
-import { MockResponse } from 'src/app/models/mock/mock.model';
-import { AppService } from 'src/app/services/app.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { AuthService, CurrentUser } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
 
   @Input() version: string = "";
+  user$: Observable<CurrentUser | null>;
 
+  constructor(private auth: AuthService, private router: Router) {
+    this.user$ = this.auth.user$;
+  }
+
+  ngOnInit(): void {
+    if (!this.auth.isLoggedIn()) {
+      this.auth.refresh().subscribe();
+    }
+  }
+
+  logout(): void {
+    this.auth.logout().subscribe(() => this.router.navigateByUrl('/login'));
+  }
 }

@@ -1,37 +1,59 @@
-version: '3'
+# Quickstart docker-compose for local development. Pulls pre-built images from Docker Hub.
+# For production deployments use docker-compose.prod.yml which builds locally and includes
+# resource limits, restart policies and TLS-ready nginx in front.
+version: "3.9"
+
 services:
   mockpit-server:
     container_name: mockpit-server
-    image: sranmanpreet/mockpit-server:1.1.0-RELEASE
+    image: sranmanpreet/mockpit-server:2.0.0-RELEASE
     ports:
       - "8080:8080"
     depends_on:
-      - "db"
+      db:
+        condition: service_healthy
     environment:
-      SPRING_APPLICATION_JSON: '{
-              "spring.datasource.url"  : "jdbc:postgresql://db:5432/mockpitdb",
-              "spring.datasource.username" : "mockpitadmin",
-              "spring.datasource.password" : "admin"
-            }'
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/mockpitdb
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-mockpit}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-mockpit-dev}
+      MOCKPIT_ALLOWED_ORIGINS: http://localhost:4200
+      MOCKPIT_BOOTSTRAP_ADMIN_ENABLED: "true"
+      MOCKPIT_BOOTSTRAP_ADMIN_EMAIL: admin@mockpit.local
+      MOCKPIT_BOOTSTRAP_ADMIN_PASSWORD: ChangeMeNow123!
+      # NOTE: replace these dev defaults before pushing to any shared environment.
+      MOCKPIT_JWT_SECRET: dev-jwt-secret-32-bytes-minimum-please-rotate
+      MOCKPIT_SECRET_CIPHER_KEY: AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=
+    restart: unless-stopped
 
   mockpit-client:
-    image: sranmanpreet/mockpit-client:1.1.0-RELEASE
+    container_name: mockpit-client
+    image: sranmanpreet/mockpit-client:2.0.0-RELEASE
     environment:
       backendUrl: http://localhost:8080
     ports:
       - "4200:80"
+    depends_on:
+      - mockpit-server
+    restart: unless-stopped
 
   db:
-    container_name: db
-    image: postgres:15
+    container_name: mockpit-db
+    image: postgres:15-alpine
     ports:
       - "5432:5432"
     environment:
       POSTGRES_DB: mockpitdb
-      POSTGRES_USER: mockpitadmin
-      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: ${POSTGRES_USER:-mockpit}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mockpit-dev}
     volumes:
-      - "mockpitpgdata:/var/lib/postgresql/data"
-    command: -p 5432
+      - mockpitpgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-mockpit} -d mockpitdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
 volumes:
   mockpitpgdata:

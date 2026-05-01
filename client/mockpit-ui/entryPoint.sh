@@ -1,2 +1,8 @@
-#!/bin/bash
-envsubst < /usr/share/nginx/html/assets/config/config.template.json > /usr/share/nginx/html/assets/config/config.json && exec nginx -g 'daemon off;'
+#!/bin/sh
+set -eu
+TEMPLATE=/usr/share/nginx/html/assets/config/config.template.json
+TARGET=/usr/share/nginx/html/assets/config/config.json
+if [ -f "$TEMPLATE" ]; then
+    envsubst < "$TEMPLATE" > "$TARGET"
+fi
+exec nginx -g 'daemon off;'

@@ -1,13 +1,11 @@
 package com.ms.utils.mockpit;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class MockpitApplicationTests {
+class MockpitApplicationTests extends AbstractIntegrationTest {
 
-	@Test
-	void contextLoads() {
-	}
-
+    @Test
+    void contextLoads() {
+        // Spring context startup is the assertion. Anything missing throws on bean wiring.
+    }
 }

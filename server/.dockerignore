@@ -1,0 +1,10 @@
+target/
+.git/
+.gitignore
+.idea/
+*.iml
+**/*.log
+.env
+.env.*
+!.env.example
+secrets/

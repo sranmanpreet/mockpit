@@ -1,51 +1,41 @@
-## Use the official OpenJDK image for Java 11 as the base image
-#FROM openjdk:11-jdk-slim
-#
-## Set the working directory inside the container
-#WORKDIR /app
-#
-## Copy the Spring Boot JAR file and application-prod.yml into the container
-#COPY target/mockpit-1.0.0-RELEASE.jar /app/mockpit-1.0.0-RELEASE.jar
-#COPY src/main/resources/application.yml /app/application.yml
-#
-#EXPOSE 8080
-#
-#ENV SPRING_CONFIG_LOCATION=/app/application.yml
-#ENV SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/mockpitdb
-#ENV SPRING_DATASOURCE_USERNAME=mockpituser
-#ENV SPRING_DATASOURCE_PASSWORD=mockpitpassword
-#
-#CMD ["java", "-jar", "/app/mockpit-1.0.0-RELEASE.jar"]
+# syntax=docker/dockerfile:1.6
+# Multi-stage build for the Mockpit server. The runtime image is distroless-ish - a small
+# Eclipse Temurin JRE image running as a non-root user with a healthcheck against /actuator/health.
 
-# Use an official Maven image as the base image
-FROM maven:3.8.4-openjdk-11 AS build
+############################
+# 1. Maven build
+############################
+FROM maven:3.9.6-eclipse-temurin-11 AS build
+WORKDIR /workspace
 
-# Set the working directory
-WORKDIR /app
+COPY pom.xml ./
+RUN mvn -B -q -DskipTests dependency:go-offline
 
-# Copy the Maven project files
-COPY pom.xml .
-
-# Build the project dependencies, but don't package the app yet
-RUN mvn dependency:go-offline -B
-
-# Copy the source code
 COPY src ./src
+RUN mvn -B -q -DskipTests package \
+    && mv target/mockpit-*.jar target/app.jar
 
-# Build the Spring Boot application
-RUN mvn package -DskipTests
+############################
+# 2. Runtime
+############################
+FROM eclipse-temurin:11-jre-jammy
 
-# Create a new Docker image with the application
-FROM openjdk:11-jre-slim
+ENV LANG=C.UTF-8 \
+    JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError -Djava.security.egd=file:/dev/./urandom"
 
-# Set the working directory
+RUN groupadd --system mockpit \
+    && useradd --system --gid mockpit --home /app --shell /usr/sbin/nologin mockpit \
+    && mkdir -p /app \
+    && chown -R mockpit:mockpit /app
+
 WORKDIR /app
+COPY --from=build --chown=mockpit:mockpit /workspace/target/app.jar /app/mockpit-server.jar
 
-# Copy the compiled JAR file from the build stage
-COPY --from=build /app/target/mockpit-*.jar mockpit.jar
+USER mockpit
 
-# Expose the port that the Spring Boot app listens on
 EXPOSE 8080
 
-# Run the Spring Boot application
-CMD ["java", "-jar", "mockpit.jar"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+    CMD wget -q --spider http://localhost:8080/actuator/health || exit 1
+
+ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar /app/mockpit-server.jar"]

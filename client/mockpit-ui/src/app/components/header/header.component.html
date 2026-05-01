@@ -1,12 +1,19 @@
 <nav class="w-full m-auto h-12 flex justify-between items-center md:max-w-[90vw] lg:max-w-[80vw] sticky top-0">
     <a href="#" class="pl-4">
-        <!-- <img src="path/to/logo.png" alt="Logo"> -->
         <h1 class="text-lg font-bold">
             Mock<span class="text-red-400">pit</span><span class="text-sm font-light ml-1"><sub>{{version}}</sub></span>
         </h1>
     </a>
-    <ul class="space-x-4 pr-4">
-        <button class="google-button orange h-min" [routerLink]="['manage']">Manage Mocks</button>
-        <button class="google-button blue h-min" [routerLink]="['mock/new']">New Mock</button>
+    <ul class="space-x-4 pr-4 flex items-center">
+        <ng-container *ngIf="user$ | async as user; else loggedOut">
+            <button class="google-button orange h-min" [routerLink]="['manage']">Manage Mocks</button>
+            <button class="google-button blue h-min" [routerLink]="['mock/new']">New Mock</button>
+            <span class="text-sm text-gray-700">{{ user.displayName || user.email }}</span>
+            <button class="google-button grey h-min" (click)="logout()">Sign out</button>
+        </ng-container>
+        <ng-template #loggedOut>
+            <button class="google-button blue h-min" [routerLink]="['login']">Sign in</button>
+            <button class="google-button orange h-min" [routerLink]="['signup']">Sign up</button>
+        </ng-template>
     </ul>
 </nav>

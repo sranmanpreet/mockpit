@@ -9,5 +9,8 @@
     <include
             file="classpath:liquibase/changelog/release_1.1/add_inactive_flag_to_mock_table.xml"
             relativeToChangelogFile="false" />
+    <include
+            file="classpath:liquibase/changelog/release_2.0/add_users_and_ownership.xml"
+            relativeToChangelogFile="false" />
 
 </databaseChangeLog>

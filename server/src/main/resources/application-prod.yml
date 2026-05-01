@@ -1,0 +1,43 @@
+# Production overrides. All secrets MUST come from the environment; the application will fail to
+# start if any of the *Required* keys below resolve to a placeholder.
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:?SPRING_DATASOURCE_URL is required}
+    username: ${SPRING_DATASOURCE_USERNAME:?SPRING_DATASOURCE_USERNAME is required}
+    password: ${SPRING_DATASOURCE_PASSWORD:?SPRING_DATASOURCE_PASSWORD is required}
+
+server:
+  servlet:
+    session:
+      cookie:
+        secure: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: never
+
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
+
+logging:
+  level:
+    root: WARN
+    com.ms.utils.mockpit: INFO
+
+mockpit:
+  cors:
+    allowed-origins: ${MOCKPIT_ALLOWED_ORIGINS:?MOCKPIT_ALLOWED_ORIGINS is required in prod}
+  security:
+    jwt:
+      secret: ${MOCKPIT_JWT_SECRET:?MOCKPIT_JWT_SECRET is required in prod (>= 32 random bytes, base64)}
+    secret-cipher-key: ${MOCKPIT_SECRET_CIPHER_KEY:?MOCKPIT_SECRET_CIPHER_KEY is required in prod (32 bytes, base64)}
+    bootstrap-admin:
+      enabled: ${MOCKPIT_BOOTSTRAP_ADMIN_ENABLED:false}

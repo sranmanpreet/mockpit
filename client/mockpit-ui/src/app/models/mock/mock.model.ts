@@ -1,3 +1,5 @@
+import { AuthConfig, AuthFailureResponse } from '../auth-config.model';
+
 export interface Mock {
   id: number,
   name: string,
@@ -6,7 +8,10 @@ export interface Mock {
   responseBody: ResponseBody,
   responseStatus: ResponseStatus,
   route: Route,
-  responseHeaders: Array<ResponseHeader>
+  responseHeaders: Array<ResponseHeader>,
+  userId?: number,
+  authConfig?: AuthConfig,
+  authFailure?: AuthFailureResponse
 }
 
 interface ResponseBody {

@@ -1,4 +1,43 @@
-node_modules
-.idea
-derby.log
-mockpit.log
+# Dependencies
+node_modules/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+# Logs
+*.log
+logs/
+
+# Build artifacts
+target/
+dist/
+build/
+.angular/
+
+# Local config / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test / coverage
+coverage/
+*.coverage
+*.lcov
+jacoco.exec
+test-results/
+playwright-report/
+
+# Misc
+*.bak
+*.swp

@@ -1,0 +1,132 @@
+<div class="auth-config">
+  <h3>Authentication</h3>
+  <p class="muted">Choose how Mockpit should authenticate inbound requests for this mock.</p>
+
+  <div class="form-row">
+    <label>
+      <span>Scheme</span>
+      <select [(ngModel)]="type" (ngModelChange)="onTypeChange()" name="authType">
+        <option *ngFor="let opt of typeOptions" [value]="opt.value">{{ opt.label }}</option>
+      </select>
+    </label>
+  </div>
+
+  <ng-container [ngSwitch]="type">
+    <p *ngSwitchCase="'NONE'" class="muted">No authentication required. Anyone can call this mock.</p>
+
+    <ng-container *ngSwitchCase="'BASIC'">
+      <div class="form-row">
+        <label>
+          <span>Username</span>
+          <input type="text" [(ngModel)]="asBasic().username" (ngModelChange)="emit()" name="username" />
+        </label>
+        <label>
+          <span>Password</span>
+          <input type="password" [(ngModel)]="asBasic().password" (ngModelChange)="emit()" name="password"
+                 placeholder="Leave blank to keep existing" />
+        </label>
+        <label>
+          <span>Realm</span>
+          <input type="text" [(ngModel)]="asBasic().realm" (ngModelChange)="emit()" name="realm" placeholder="mockpit" />
+        </label>
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'JWT'">
+      <div class="form-row">
+        <label>
+          <span>Algorithm</span>
+          <select [(ngModel)]="asJwt().algorithm" (ngModelChange)="emit()" name="algorithm">
+            <option *ngFor="let a of jwtAlgs" [value]="a">{{ a }}</option>
+          </select>
+        </label>
+        <label>
+          <span>Required issuer</span>
+          <input type="text" [(ngModel)]="asJwt().requiredIssuer" (ngModelChange)="emit()" name="iss" />
+        </label>
+        <label>
+          <span>Allowed clock skew (seconds)</span>
+          <input type="number" min="0" [(ngModel)]="asJwt().clockSkewSeconds" (ngModelChange)="emit()" name="skew" />
+        </label>
+      </div>
+      <div class="form-row" *ngIf="asJwt().algorithm?.startsWith('HS')">
+        <label class="full">
+          <span>Shared secret</span>
+          <input type="password" [(ngModel)]="asJwt().sharedSecret" (ngModelChange)="emit()" name="hsSecret"
+                 placeholder="Leave blank to keep existing" />
+        </label>
+      </div>
+      <div class="form-row" *ngIf="!asJwt().algorithm?.startsWith('HS')">
+        <label class="full">
+          <span>JWKS URI (preferred)</span>
+          <input type="text" [(ngModel)]="asJwt().jwksUri" (ngModelChange)="emit()" name="jwksUri" />
+        </label>
+        <label class="full">
+          <span>or PEM-encoded public key</span>
+          <textarea rows="4" [(ngModel)]="asJwt().publicKeyPem" (ngModelChange)="emit()" name="pem"></textarea>
+        </label>
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'OAUTH2_RS'">
+      <div class="form-row">
+        <label class="full">
+          <span>Issuer URL</span>
+          <input type="url" [(ngModel)]="asRs().issuer" (ngModelChange)="emit()" name="issuer"
+                 placeholder="https://example.auth.com" />
+        </label>
+        <label class="full">
+          <span>JWKS URI (optional, overrides discovery)</span>
+          <input type="url" [(ngModel)]="asRs().jwksUri" (ngModelChange)="emit()" name="jwksUriRs" />
+        </label>
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'OAUTH2_INTROSPECT'">
+      <div class="form-row">
+        <label class="full">
+          <span>Introspection URI</span>
+          <input type="url" [(ngModel)]="asIntrospect().introspectionUri" (ngModelChange)="emit()" name="introspect" />
+        </label>
+        <label>
+          <span>Client ID</span>
+          <input type="text" [(ngModel)]="asIntrospect().clientId" (ngModelChange)="emit()" name="clientId" />
+        </label>
+        <label>
+          <span>Client secret</span>
+          <input type="password" [(ngModel)]="asIntrospect().clientSecret" (ngModelChange)="emit()" name="clientSecret"
+                 placeholder="Leave blank to keep existing" />
+        </label>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <hr *ngIf="type !== 'NONE'" />
+
+  <details *ngIf="type !== 'NONE'">
+    <summary>Custom auth-failure response (optional)</summary>
+    <p class="muted">Override the default 401/403 response Mockpit returns when authentication fails.</p>
+    <div class="form-row">
+      <label>
+        <span>Status code</span>
+        <input type="number" min="100" max="599" [(ngModel)]="failure.status" (ngModelChange)="emit()" name="failStatus" />
+      </label>
+      <label>
+        <span>Content-Type</span>
+        <input type="text" [(ngModel)]="failure.contentType" (ngModelChange)="emit()" name="failType" />
+      </label>
+    </div>
+    <label class="full">
+      <span>Response body</span>
+      <textarea rows="3" [(ngModel)]="failure.body" (ngModelChange)="emit()" name="failBody"></textarea>
+    </label>
+  </details>
+
+  <div *ngIf="type !== 'NONE'" class="test-row">
+    <label class="full">
+      <span>Try a request header (e.g. <code>Authorization: Bearer ...</code>)</span>
+      <input type="text" [(ngModel)]="testHeader" name="testHeader" />
+    </label>
+    <button type="button" (click)="onTest()">Test auth</button>
+  </div>
+</div>

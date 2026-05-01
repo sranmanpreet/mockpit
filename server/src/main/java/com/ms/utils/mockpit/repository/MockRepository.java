@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,9 +14,11 @@ import java.util.Optional;
 @Repository
 public interface MockRepository extends JpaRepository<Mock, Long> {
 
-    Page<Mock> findByRouteContaining(String route, Pageable pageable);
+    Page<Mock> findAllByUserId(Long userId, Pageable pageable);
 
-    Optional<Mock> findByRoute(String route);
+    Optional<Mock> findByIdAndUserId(Long id, Long userId);
+
+    long countByUserId(Long userId);
 
     @Query("SELECT m FROM Mock m JOIN m.route r WHERE r.path = :route AND r.method = :method AND m.inactive = false")
     List<Mock> findByRouteAndMethod(@Param("route") String route, @Param("method") String method);
@@ -28,11 +29,23 @@ public interface MockRepository extends JpaRepository<Mock, Long> {
     @Query("SELECT m FROM Mock m " +
             "LEFT JOIN m.route r " +
             "LEFT JOIN m.responseBody rb " +
-            "WHERE (:query IS NOT NULL AND :query != '') " +
-            "AND (UPPER(m.name) LIKE UPPER(CONCAT('%', :query, '%')) " +
-            "OR UPPER(m.description) LIKE UPPER(CONCAT('%', :query, '%')) " +
-            "OR UPPER(r.path) LIKE UPPER(CONCAT('%', :query, '%')) " +
-            "OR UPPER(rb.content) LIKE UPPER(CONCAT('%', :query, '%')))")
+            "WHERE (:query IS NOT NULL AND :query <> '') " +
+            "AND ( UPPER(m.name) LIKE UPPER(CONCAT('%', :query, '%')) " +
+            "   OR UPPER(m.description) LIKE UPPER(CONCAT('%', :query, '%')) " +
+            "   OR UPPER(r.path) LIKE UPPER(CONCAT('%', :query, '%')) " +
+            "   OR UPPER(rb.content) LIKE UPPER(CONCAT('%', :query, '%')) )")
     Page<Mock> searchMocks(@Param("query") String query, Pageable pageable);
-}
 
+    @Query("SELECT m FROM Mock m " +
+            "LEFT JOIN m.route r " +
+            "LEFT JOIN m.responseBody rb " +
+            "WHERE m.userId = :userId " +
+            "AND (:query IS NOT NULL AND :query <> '') " +
+            "AND ( UPPER(m.name) LIKE UPPER(CONCAT('%', :query, '%')) " +
+            "   OR UPPER(m.description) LIKE UPPER(CONCAT('%', :query, '%')) " +
+            "   OR UPPER(r.path) LIKE UPPER(CONCAT('%', :query, '%')) " +
+            "   OR UPPER(rb.content) LIKE UPPER(CONCAT('%', :query, '%')) )")
+    Page<Mock> searchMocksByUser(@Param("userId") Long userId,
+                                 @Param("query") String query,
+                                 Pageable pageable);
+}

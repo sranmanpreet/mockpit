@@ -1,12 +1,8 @@
 package com.ms.utils.mockpit.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "mock")
@@ -21,6 +17,34 @@ public class Mock extends AbstractEntity {
     private String description;
 
     private boolean inactive;
+
+    /**
+     * Owner of the mock. Nullable for legacy (pre-2.0) mocks created before multi-tenancy
+     * existed - those are visible to admins only and need to be re-assigned manually.
+     */
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "auth_type", nullable = false, length = 32)
+    private AuthType authType = AuthType.NONE;
+
+    /**
+     * JSON payload describing the auth configuration. Schema depends on {@link #authType}.
+     * Secrets inside this payload are encrypted at rest by {@code SecretCipher} before save and
+     * decrypted on load.
+     */
+    @Column(name = "auth_config_json", columnDefinition = "text")
+    private String authConfigJson;
+
+    @Column(name = "auth_failure_status")
+    private Integer authFailureStatus;
+
+    @Column(name = "auth_failure_body", columnDefinition = "text")
+    private String authFailureBody;
+
+    @Column(name = "auth_failure_content_type", length = 120)
+    private String authFailureContentType;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "route_id")
@@ -111,4 +135,16 @@ public class Mock extends AbstractEntity {
         this.responseStatus = responseStatus;
     }
 
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
+    public AuthType getAuthType() { return authType == null ? AuthType.NONE : authType; }
+    public void setAuthType(AuthType authType) { this.authType = authType == null ? AuthType.NONE : authType; }
+    public String getAuthConfigJson() { return authConfigJson; }
+    public void setAuthConfigJson(String authConfigJson) { this.authConfigJson = authConfigJson; }
+    public Integer getAuthFailureStatus() { return authFailureStatus; }
+    public void setAuthFailureStatus(Integer authFailureStatus) { this.authFailureStatus = authFailureStatus; }
+    public String getAuthFailureBody() { return authFailureBody; }
+    public void setAuthFailureBody(String authFailureBody) { this.authFailureBody = authFailureBody; }
+    public String getAuthFailureContentType() { return authFailureContentType; }
+    public void setAuthFailureContentType(String authFailureContentType) { this.authFailureContentType = authFailureContentType; }
 }

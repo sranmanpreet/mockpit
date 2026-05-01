@@ -1,63 +1,137 @@
+# Default (dev) profile. Production overrides come from application-prod.yml + env vars.
 app:
-   name: Mockpit
-   version: 1.1.0
+  name: Mockpit
+  version: @project.version@
+
 spring:
-   liquibase:
-      change-log: classpath:liquibase/master.xml
-      enabled: true
-   datasource:
-      url: jdbc:postgresql://localhost:5432/moock
-      username: postgres
-      password: postgres
-      driver-class-name: org.postgresql.Driver
-   jpa:
+  application:
+    name: mockpit
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  liquibase:
+    change-log: classpath:liquibase/master.xml
+    enabled: true
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/mockpitdb}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: ${MOCKPIT_DB_POOL_MAX:10}
+      minimum-idle: ${MOCKPIT_DB_POOL_MIN:2}
+      connection-timeout: 5000
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      pool-name: MockpitHikariPool
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
       hibernate:
-         ddl-auto: none
-      properties:
-         hibernate:
-            dialect: org.hibernate.dialect.PostgreSQLDialect
-   mvc:
-      cors:
-         allowed-origins: "*"
-         allowed-methods: "*"
-         allowed-headers: "*"
-      static-path-pattern: /**
-   resources:
-      static-locations: classpath:/static/
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          batch_size: 25
+        order_inserts: true
+        order_updates: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: ${MOCKPIT_IMPORT_MAX_FILE_SIZE:2MB}
+      max-request-size: ${MOCKPIT_IMPORT_MAX_REQUEST_SIZE:2MB}
+  data:
+    web:
+      pageable:
+        max-page-size: 200
+        default-page-size: 20
 
 server:
-   port: 8080
+  port: ${SERVER_PORT:8080}
+  forward-headers-strategy: framework
+  error:
+    include-stacktrace: never
+    include-message: always
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        secure: ${MOCKPIT_COOKIE_SECURE:false}
+        same-site: lax
 
-logging:
-   level:
-      root: INFO
-      com.example.package: DEBUG
-   file: /server/log/mockpit.log
-   configuration:
-      status: warn
-      appenders:
-         - name: ConsoleAppender
-           type: Console
-           target: SYSTEM_OUT
-           PatternLayout:
-              pattern: "%d [%t] %-5level %logger{36} - %msg%n"
-      loggers:
-         - name: com.example.package
-           level: DEBUG
-           AppenderRef:
-              - ref: ConsoleAppender
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: when_authorized
+    prometheus:
+      enabled: true
+  info:
+    env:
+      enabled: false
+    git:
+      mode: simple
 
 springdoc:
-   swagger-ui:
-      path: /swagger-ui.html
-      enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+    title: Mockpit API
+    description: A REST mock server with pluggable per-mock authentication.
 
-   api-docs:
-      path: /v3/api-docs
-      enabled: true
-      title: Mock Buddy API
-      description: A REST Mock Server
+logging:
+  level:
+    root: INFO
+    com.ms.utils.mockpit: INFO
+
+mockpit:
+  cors:
+    # Comma-separated allowlist. Wildcards are NOT supported in production. Empty disables CORS.
+    allowed-origins: ${MOCKPIT_ALLOWED_ORIGINS:http://localhost:4200}
+    allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+    allowed-headers: Authorization,Content-Type,X-Requested-With,X-CSRF-TOKEN
+    exposed-headers: Content-Disposition
+    allow-credentials: true
+    max-age: 3600
+  security:
+    # 32+ random bytes (base64). Mandatory in prod profile (fail-fast). DEV ONLY default below.
+    jwt:
+      secret: ${MOCKPIT_JWT_SECRET:dev-only-do-not-use-in-prod-please-change-me-32+chars}
+      issuer: mockpit
+      access-token-ttl-seconds: ${MOCKPIT_JWT_ACCESS_TTL:900}
+      refresh-token-ttl-seconds: ${MOCKPIT_JWT_REFRESH_TTL:2592000}
+      cookie-name: mockpit_session
+      cookie-domain: ${MOCKPIT_COOKIE_DOMAIN:}
+    # AES-GCM key (32 bytes base64) used to encrypt per-mock auth secrets at rest. Mandatory in prod.
+    secret-cipher-key: ${MOCKPIT_SECRET_CIPHER_KEY:ZGV2LW9ubHktY2lwaGVyLWtleS1kby1ub3QtdXNlLWluLXByb2RkZGRkZA==}
+    # First-run bootstrap admin (only created on empty users table)
+    bootstrap-admin:
+      enabled: ${MOCKPIT_BOOTSTRAP_ADMIN_ENABLED:true}
+      email: ${MOCKPIT_BOOTSTRAP_ADMIN_EMAIL:admin@mockpit.local}
+      password: ${MOCKPIT_BOOTSTRAP_ADMIN_PASSWORD:ChangeMe123!}
+  ratelimit:
+    enabled: ${MOCKPIT_RATELIMIT_ENABLED:true}
+    admin-requests-per-minute: ${MOCKPIT_RATELIMIT_ADMIN:300}
+    live-requests-per-minute: ${MOCKPIT_RATELIMIT_LIVE:600}
+  js-sandbox:
+    timeout-ms: ${MOCKPIT_JS_TIMEOUT_MS:1000}
+    max-statements: ${MOCKPIT_JS_MAX_STATEMENTS:100000}
+    max-output-bytes: ${MOCKPIT_JS_MAX_OUTPUT:262144}
+  http-client:
+    connect-timeout-ms: 3000
+    read-timeout-ms: 5000
+    # Domains permitted for outbound JWKS / OIDC discovery / introspection requests.
+    # Empty list means "any public IP". Private/loopback/link-local are ALWAYS blocked.
+    allowed-hosts: ${MOCKPIT_ALLOWED_HOSTS:}
 
 dynamic-mocks:
-   path-variable-prefix: "pathVariable___"
-   query-parameter-prefix: "queryParameter___"
+  path-variable-prefix: "pathVariable___"
+  query-parameter-prefix: "queryParameter___"

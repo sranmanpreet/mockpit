@@ -1,18 +1,39 @@
-# Stage 1: Build an Angular Docker Image
-FROM node:14.21.0-alpine as build
-WORKDIR /apps
+# syntax=docker/dockerfile:1.6
+# Multi-stage build for the Mockpit Angular client. Build is done with a pinned Node 18 image
+# so we get current security patches; runtime is nginx-alpine with non-root user.
+
+############################
+# 1. Build
+############################
+FROM node:18.20.4-alpine AS build
+WORKDIR /workspace
+
+COPY package.json package-lock.json* ./
+RUN npm ci
+
 COPY . .
-RUN npm install
-COPY . /apps
 ARG configuration=production
-RUN npm run build --outputPath=/apps/dist/ --configuration=$configuration
-# Stage 2, use the compiled app, ready for production with Nginx
-FROM nginx:alpine
-# COPY /nginx-custom.conf /etc/nginx/conf.d/
-RUN rm -rf /usr/share/nginx/html/*
-COPY --from=build /apps/dist/ /usr/share/nginx/html/
-# Copy the EntryPoint
-COPY ./entryPoint.sh /
-RUN chmod +x entryPoint.sh
-ENTRYPOINT ["sh","/entryPoint.sh"]
+RUN npm run build -- --configuration=$configuration --output-path=/workspace/dist
+
+############################
+# 2. Runtime
+############################
+FROM nginx:1.27-alpine
+
+RUN apk add --no-cache gettext \
+    && rm -rf /usr/share/nginx/html/*
+
+COPY --from=build /workspace/dist /usr/share/nginx/html/
+COPY ./entryPoint.sh /entryPoint.sh
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+RUN chmod +x /entryPoint.sh
+
+EXPOSE 80
+
+USER nginx
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD wget -qO- http://127.0.0.1/ >/dev/null || exit 1
+
+ENTRYPOINT ["sh", "/entryPoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]

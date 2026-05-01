@@ -1,0 +1,15 @@
+**/.git
+**/.idea
+**/node_modules
+**/target
+**/dist
+**/.angular
+**/coverage
+**/*.log
+.env
+.env.*
+!.env.example
+secrets/
+documentation/
+README.md
+LICENSE

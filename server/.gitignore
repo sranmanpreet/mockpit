@@ -31,3 +31,13 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Logs / runtime artifacts ###
+*.log
+derby.log
+
+### Local secrets ###
+.env
+.env.*
+!.env.example
+secrets/
